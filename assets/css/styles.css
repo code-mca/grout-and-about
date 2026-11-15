@@ -579,6 +579,51 @@ button:focus-visible {
   font-size: 24px;
 }
 
+/* Bike band styling */
+.bike-band {
+  background-color: var(--mint);
+  border-top: 2px solid var(--plum);
+  border-bottom: 2px solid var(--plum);
+  padding: 48px 0;
+}
+
+.bike-text {
+  flex: 1 1 420px;
+}
+
+.bike-text h2 {
+  font-size: 2.25rem;
+  margin-bottom: 8px;
+}
+
+.bike-text p {
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.plain-link {
+  color: var(--plum);
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+/* Last question area */
+.cta {
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+.cta h2 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.cta p {
+  font-size: 1.1875rem;
+  max-width: 44ch;
+  margin: 0 auto 24px;
+}
+
 /* ##### Media Queries ##################################################### */
 
 /* Accessibility - Reduce motion setting: no lift or animation, colour change only */
@@ -597,7 +642,7 @@ button:focus-visible {
   }
   .svc-card:hover,
   .svc-card:has(:focus-visible) {
-    transition: none;
+    transform: none;
   }
 }
 
