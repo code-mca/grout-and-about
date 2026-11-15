@@ -671,7 +671,7 @@ button:focus-visible {
 }
 
 /* 1114px and up: three across, longest wraps to 2 lines for just .rad-cards */
-@media (min-width: 1px) {
+@media (min-width: 1114px) {
   .rad-card .svc-desc {
     min-height: 2lh;
   }
@@ -771,5 +771,31 @@ button:focus-visible {
   /* Button amendments */
   .hero-actions .btn-pill {
     flex: 1 1 auto;
+  }
+
+  /* Service card amendments */
+  .svc-group {
+    padding: 20px 16px;
+  }
+
+  .svc-group h3 {
+    font-size: 26px;
+  }
+
+  /* Room for one-word titles like "Installations" on a 320px phone */
+  .svc-card {
+    --bs-card-spacer-x: 18px;
+  }
+
+  .svc-head h4 {
+    font-size: 1.25rem; /* 20px */
+  }
+
+  .bike-band h2 {
+    font-size: 28px;
+  }
+
+  #cta h2 {
+    font-size: 36px;
   }
 }
