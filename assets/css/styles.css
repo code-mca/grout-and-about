@@ -541,6 +541,44 @@ button:focus-visible {
   font-size: 1rem;
 }
 
+/* Card styling - shadow lift on hover */
+.svc-card {
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.svc-card:hover,
+.svc-card:has(:focus-visible) {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 0 var(--plum);
+}
+.svc-card:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Help strip styling */
+.help-strip {
+  display: flex;
+  --bs-card-bg: var(--lilac-tint);
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.help-strip p {
+  margin: 0;
+}
+
+.help-title {
+  font-family: "Fredoka", sans-serif;
+  font-weight: 600;
+  font-size: 24px;
+}
+
 /* ##### Media Queries ##################################################### */
 
 /* Accessibility - Reduce motion setting: no lift or animation, colour change only */
@@ -553,6 +591,13 @@ button:focus-visible {
   }
   .float-layer img {
     animation: none;
+  }
+  .svc-card {
+    transition: none;
+  }
+  .svc-card:hover,
+  .svc-card:has(:focus-visible) {
+    transition: none;
   }
 }
 
@@ -577,6 +622,13 @@ button:focus-visible {
   }
   .svc-head {
     min-height: 3.3rem; /* two lines of a 24px title at line-height 1.1 */
+  }
+}
+
+/* 1114px and up: three across, longest wraps to 2 lines for just .rad-cards */
+@media (min-width: 1px) {
+  .rad-card .svc-desc {
+    min-height: 2lh;
   }
 }
 
