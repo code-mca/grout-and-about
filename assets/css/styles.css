@@ -272,6 +272,12 @@ button:focus-visible {
   animation: bob 7s ease-in-out infinite alternate;
 }
 
+/* Extra icons that only show on very wide screens (see the media queries) */
+.float-layer .wide-only,
+.float-layer .extra-wide-only {
+  display: none;
+}
+
 /* Animate each icon with a different speed and start time */
 
 .float-layer img:nth-child(3n) {
@@ -297,7 +303,7 @@ button:focus-visible {
 .hero-inner {
   position: relative;
   z-index: 1;
-  padding-top: 56px;
+  padding-top: 58px; /* room for the top row of icons */
   padding-bottom: 92px;
 }
 
@@ -674,6 +680,20 @@ button:focus-visible {
 @media (min-width: 1114px) {
   .rad-card .svc-desc {
     min-height: 2lh;
+  }
+}
+
+/* 1800px and up: three extra icons fill the wider gaps */
+@media (min-width: 1800px) {
+  .float-layer .wide-only {
+    display: block;
+  }
+}
+
+/* 2240px and up (4K screens): five more */
+@media (min-width: 2240px) {
+  .float-layer .extra-wide-only {
+    display: block;
   }
 }
 
