@@ -12,6 +12,7 @@
   --plum: #2b1840;
   --plum-line: #4a3463;
   --cream: #fff9f0;
+  --marigold-tint: #ffe7a6;
   --marigold: #ffc845;
   --marigold-deep: #ffb912;
   --mint: #5fd3be;
@@ -374,7 +375,7 @@ button:focus-visible {
   background: url("../images/ui/tick-violet.svg") left 0.2em / 18px no-repeat;
 }
 
-/* Services section styling */
+/* ##### Index Page - Services Section ####################################### */
 
 .section {
   padding-top: 56px;
@@ -399,7 +400,7 @@ button:focus-visible {
   padding-top: 28px;
 }
 
-/* Card styling */
+/* Index- Page - Card styling */
 
 .card {
   --bs-card-bg: var(--white);
@@ -425,7 +426,7 @@ button:focus-visible {
   border-radius: 14px;
 }
 
-/* Icon styling */
+/* Index- Page - Icon styling */
 .icon-tile img {
   width: 24px;
   height: 24px;
@@ -450,7 +451,7 @@ button:focus-visible {
   height: 52px;
 }
 
-/* Tile colour schemes */
+/* Index- Page - Tile colour schemes */
 .tile-mint {
   background-color: var(--mint);
 }
@@ -468,7 +469,7 @@ button:focus-visible {
   background-color: var(--lilac);
 }
 
-/* Service group styling */
+/* Index- Page - Service group styling */
 .svc-group {
   --bs-card-bg: var(--lilac);
   --bs-card-border-radius: 28px;
@@ -485,7 +486,7 @@ button:focus-visible {
   margin-bottom: 18px;
 }
 
-/* Service card details */
+/* Index- Page - Service card details */
 .svc-card {
   gap: 12px;
 }
@@ -509,7 +510,7 @@ button:focus-visible {
   font-weight: 700;
 }
 
-/* Card styling - toggle button */
+/* Index- Page - Card styling - toggle button */
 .included-toggle {
   display: flex;
   align-items: center;
@@ -547,7 +548,7 @@ button:focus-visible {
   font-size: 1rem;
 }
 
-/* Card styling - shadow lift on hover */
+/* Index- Page - Card styling - shadow lift on hover */
 .svc-card {
   transition:
     transform 0.25s ease,
@@ -564,7 +565,9 @@ button:focus-visible {
   box-shadow: none;
 }
 
-/* Help strip styling */
+/* ##### Index Page - Bike & Contact Section ####################################### */
+
+/* Index- Page - Help strip styling */
 .help-strip {
   display: flex;
   --bs-card-bg: var(--lilac-tint);
@@ -585,7 +588,7 @@ button:focus-visible {
   font-size: 24px;
 }
 
-/* Bike band styling */
+/* Index- Page - Bike band styling */
 .bike-band {
   background-color: var(--mint);
   border-top: 2px solid var(--plum);
@@ -613,7 +616,7 @@ button:focus-visible {
   font-size: 1.125rem;
 }
 
-/* Last question area */
+/* Index- Page - Last question area */
 .cta {
   padding-top: 80px;
   padding-bottom: 80px;
@@ -628,6 +631,246 @@ button:focus-visible {
   font-size: 1.1875rem;
   max-width: 44ch;
   margin: 0 auto 24px;
+}
+
+/* ##### Bathroom Page - About Section ####################################### */
+
+.about-text h2 {
+  margin-bottom: 16px;
+}
+
+.about-text p {
+  font-size: 19px;
+}
+
+.about-text .about-small {
+  font-size: 15px;
+}
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+}
+
+.chip-list li {
+  background-color: var(--lilac-tint);
+  border: 2px solid var(--plum);
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-weight: 500;
+}
+
+/* Bathroom Page - John Carousel styling */
+
+.about-carousel {
+  max-width: 320px;
+  margin: 0 auto;
+  border: 2px solid var(--plum);
+  border-radius: 24px;
+  overflow: hidden;
+  background-color: var(--lilac-tint);
+}
+
+.about-carousel video {
+  object-fit: cover;
+}
+
+.badge {
+  --bs-badge-color: var(--plum);
+  --bs-badge-font-size: 13px;
+  --bs-badge-padding-x: 10px;
+  --bs-badge-padding-y: 4px;
+  --bs-badge-border-radius: 999px;
+  border: 2px solid var(--plum);
+}
+
+.photo-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  background-color: var(--marigold);
+}
+
+.options-band {
+  background-color: var(--lilac-tint);
+  border-top: 2px solid var(--plum);
+  border-bottom: 2px solid var(--plum);
+}
+
+.option-card-lilac {
+  --bs-card-bg: var(--lilac);
+}
+
+.option-card h3 {
+  margin-bottom: 8px;
+}
+
+.option-lead {
+  color: var(--violet);
+  font-weight: 500;
+  margin-bottom: 16px;
+}
+
+.option-card-lilac .option-lead {
+  color: var(--plum);
+  font-weight: 700;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background-color: var(--marigold);
+  border: 2px solid var(--plum);
+  opacity: 1;
+  top: 50%;
+  bottom: auto;
+  transform: translateY(-50%);
+}
+
+.carousel-control-prev {
+  left: 10px;
+}
+
+.carousel-control-next {
+  right: 10px;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  opacity: 1;
+  box-shadow: 0 3px 0 var(--plum);
+}
+
+.carousel-control-prev:focus,
+.carousel-control-next:focus {
+  opacity: 1;
+}
+
+.carousel-control-prev:focus-visible,
+.carousel-control-next:focus-visible {
+  opacity: 1;
+  outline: 3px solid var(--violet);
+  outline-offset: 3px;
+}
+
+.carousel-indicators {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  bottom: 10px;
+  gap: 6px;
+  margin: 0;
+  padding: 5px 9px;
+  background-color: var(--cream);
+  border: 2px solid var(--plum);
+  border-radius: 999px;
+}
+
+.carousel-indicators [data-bs-target] {
+  width: 12px;
+  height: 12px;
+  box-sizing: border-box;
+  margin: 0;
+  border: 2px solid var(--plum);
+  border-radius: 999px;
+  background-color: var(--cream);
+  opacity: 1;
+}
+
+.carousel-indicators .active {
+  background-color: var(--plum);
+}
+
+/* Bathroom Page - Project Carousel styling */
+.project-card {
+  overflow: hidden;
+  /* Same height as the title band: two lines of title + 14px padding top and bottom + 2px border */
+  --band-h: calc(2.4 * 22px + 2 * 14px + 2px);
+}
+
+.project-head h3 {
+  display: flex;
+  align-items: center;
+  min-height: 2.4em;
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.caption-strip {
+  height: var(--band-h);
+  display: flex;
+  align-items: center; /* centres the badge and caption top to bottom */
+  gap: 10px;
+  background-color: var(--lilac);
+  border-top: 2px solid var(--plum);
+  padding: 10px 14px;
+}
+
+.caption-strip p {
+  margin: 0;
+  font-size: 14.5px;
+  line-height: 1.4;
+}
+
+.stage {
+  flex-shrink: 0;
+}
+
+.stage-before {
+  background-color: var(--white);
+}
+
+.stage-progress {
+  background-color: var(--marigold);
+}
+
+.stage-finished {
+  background-color: var(--mint);
+}
+
+.counter {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  background-color: var(--cream);
+}
+
+.project-carousel .carousel-control-prev,
+.project-carousel .carousel-control-next {
+  top: calc(50% - var(--band-h) / 2);
+}
+
+.project-carousel .carousel-indicators {
+  bottom: calc(var(--band-h) + 10px);
+}
+
+/* Bathroom Page - Bottom CTA styling */
+
+.bathroom-cta {
+  background-color: var(--lilac);
+  padding: 48px 0;
+  border-top: 2px solid var(--plum);
+}
+
+.bathroom-cta-title {
+  flex: 1 1 420px;
+}
+
+.bathroom-cta-title h2 {
+  font-size: 2.25rem;
+  margin-bottom: 8px;
+}
+
+.bathroom-cta-title p {
+  font-size: 1.125rem;
+  margin: 0;
 }
 
 /* ##### Media Queries ##################################################### */
@@ -729,6 +972,12 @@ button:focus-visible {
   .float-layer img {
     width: 60px;
     height: 60px;
+  }
+  /* Project carousel layout amendments*/
+  .project-col {
+    max-width: 440px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
