@@ -153,22 +153,35 @@
                     <div class="job-tabs" role="tablist" aria-label="Type of job">
                         <!-- Repairs tab button -->
                         <button class="job-tab active" id="tab-repairs" type="button" role="tab" data-bs-toggle="tab"
-                            data-bs-target="#pane-one" aria-controls="pane-one" aria-selected="active true">
-                            <span class="icon-tile icon-tile-md tile-mint" aria-hidden="true">
+                            data-bs-target="#pane-repairs" aria-controls="pane-repairs" aria-selected="true">
+                            <span class="icon-tile tile-mint" aria-hidden="true">
                                 <img src="assets/images/ui/wrench.svg" alt="" width="28" height="28">
                             </span>
-                            <span class="job-tab-title">
-
-                            </span>
                             <span class="job-tab-text">
-
+                                <span class="job-tab-title">Repairs and small jobs</span>
+                                Transparent rates from &pound;85. Use our calculator for a cost est.
                             </span>
-                            <svg class="job-tab-arrow"></svg>
+                            <svg class="job-tab-arrow" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M12 5v14M6 13l6 6 6-6" />
+                            </svg>
                         </button>
                         <!-- Bathroom quote tab button -->
                         <button class="job-tab" id="tab-projects" type="button" role="tab" data-bs-toggle="tab"
-                            data-bs-target="#pane-two" aria-controls="pane-two" aria-selected="false">
-
+                            data-bs-target="#pane-projects" aria-controls="pane-projects" aria-selected="false">
+                            <span class="icon-tile tile-gold" aria-hidden="true">
+                                <img src="assets/images/ui/bath.svg" alt="" width="28" height="28">
+                            </span>
+                            <span class="job-tab-text">
+                                <span class="job-tab-title">Bathroom projects</span>
+                                Free visits, written quotes, straightforward process, easy!
+                            </span>
+                            <svg class="job-tab-arrow" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M12 5v14M6 13l6 6 6-6" />
+                            </svg>
                         </button>
                     </div>
                 </div>
@@ -176,25 +189,87 @@
         </section>
 
         <!-- ### Pane Content ### -->
-        <section>
-            <div class="container">
-                <div class="tab-content">
-                    <div class="pane-repairs tab-pane fade show active" id="pane-one" role="tabpanel"
-                        aria-labelledby="tab-repairs" tabindex="0">First panel</div>
-                    <div class="pane-projects tab-pane fade" id="pane-two" role="tabpanel"
-                        aria-labelledby="tab-projects" tabindex="0">
-                        Second panel</div>
-                </div>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="pane-repairs" role="tabpanel" aria-labelledby="tab-repairs"
+                tabindex="0">
+                <section class="section pb-4" id="prices" aria-labelledby="prices-title">
+                    <div class="container">
+                        <div class="section-intro">
+                            <h2 id="price-title">Repair prices</h2>
+                            <p>Weekday daytime rates for repairs and small jobs.</p>
+                        </div>
+                        <ul class="list-unstyled row row-cols-1 row-cols-lg-3 g-3 mb-4 rate-cards"
+                            aria-label="Our rates">
+                            <!-- Card one-->
+                            <li class="col">
+                                <div class="card card-body h-100 rate-card">
+                                    <div class="rate-card-head">
+                                        <span class="icon-tile tile-mint" aria-hidden="true">
+                                            <img src="assets/images/ui/clock.svg" alt="" width="28" height="28">
+                                        </span>
+                                        <h3>Time</h3>
+                                    </div>
+                                    <p class="rate-big">
+                                        <span class="rate-num">&pound;85</span>
+                                        for the first hour
+                                    </p>
+                                    <p class="rate-note">Then £40 for every half hour after that.</p>
+                                </div>
+                            </li>
+                            <!-- Card two-->
+                            <li class="col">
+                                <div class="card card-body h-100 rate-card">
+                                    <div class="rate-card-head">
+                                        <span class="icon-tile tile-lilac" aria-hidden="true">
+                                            <img src="assets/images/ui/wrench.svg" alt="" width="28" height="28">
+                                        </span>
+                                        <h3>Parts</h3>
+                                    </div>
+                                    <p class="rate-big">
+                                        <span class="rate-num">At cost</span>
+                                    </p>
+                                    <p class="rate-note">Receipts shown on your invoice.</p>
+                                </div>
+                            </li>
+                            <!-- Card three -->
+                            <li class="col">
+                                <div class="card card-body h-100 rate-card">
+                                    <div class="rate-card-head">
+                                        <span class="icon-tile tile-gold" aria-hidden="true">
+                                            <img src="assets/images/ui/pin.svg" alt="" width="28" height="28">
+                                        </span>
+                                        <h3>Travel</h3>
+                                    </div>
+                                    <p class="rate-big">
+                                        <span class="rate-num">Free</span>
+                                        if you're local
+                                    </p>
+                                    <p class="rate-note">Free on our doorstep in central Hackney. Transparent
+                                        charge if you're further out.</p>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="card card-body calc" id="calc" role="group" aria-labelledby="calc-title">
+                            <div class="calc-head">
+                                <div>
+                                    <h3 id="calc-title">Work out a repair visit</h3>
+                                    <p>Pick your area and roughly how long the job will take.</p>
+                                </div>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-12 col-lg-7">
+                                    <div class="card card-body h-100 calc-box"></div>
+                                </div>
+                                <div class="col-12 col-lg-5">
+
+                                </div>
+                            </div>
+                        </div>
+                </section>
             </div>
-        </section>
-
-
-
-        <!-- Services -->
-        <section class>
-
-        </section>
-
+            <div class="tab-pane fade" id="pane-projects" role="tabpanel" aria-labelledby="tab-projects" tabindex="0">
+                Second panel</div>
+        </div>
 
 
     </main>
