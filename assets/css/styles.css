@@ -1,7 +1,3 @@
-/* Google Fonts */
-
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fredoka:wght@300..700&display=swap");
-
 /* ###### CSS Variables ####################################################### */
 
 /* Custom Variables */
@@ -21,12 +17,12 @@
 
   /* Bootstrap Variables */
   --bs-body-font-family: "DM Sans", sans-serif;
-  --bs-body-font-size: 1.0625rem; /* 17px */
+  --bs-body-font-size: 1.0625rem;
   --bs-body-line-height: 1.6;
   --bs-body-color: var(--plum);
   --bs-body-bg: var(--cream);
-  --bs-link-color-rgb: 106, 75, 196; /* violet */
-  --bs-link-hover-color-rgb: 43, 24, 64; /* plum */
+  --bs-link-color-rgb: 106, 75, 196;
+  --bs-link-hover-color-rgb: 43, 24, 64;
 }
 
 /* ##### Global Styling ##################################################### */
@@ -87,6 +83,10 @@ h4 {
 }
 .btn-cream {
   background-color: var(--cream);
+}
+
+.btn-mint {
+  background-color: var(--mint);
 }
 
 /* Hover: lift onto a plum shadow; press: drop back down */
@@ -482,7 +482,7 @@ button:focus-visible {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 2.125rem; /* 34px */
+  font-size: 2.125rem;
   margin-bottom: 18px;
 }
 
@@ -805,7 +805,7 @@ button:focus-visible {
 .caption-strip {
   height: var(--band-h);
   display: flex;
-  align-items: center; /* centres the badge and caption top to bottom */
+  align-items: center;
   gap: 10px;
   background-color: var(--lilac);
   border-top: 2px solid var(--plum);
@@ -851,24 +851,24 @@ button:focus-visible {
   bottom: calc(var(--band-h) + 10px);
 }
 
-/* Bathroom Page - Bottom CTA styling */
+/* Closing band: shared by Bathrooms & Work and Prices & Areas */
 
-.bathroom-cta {
+.cta-band {
   background-color: var(--lilac);
   padding: 48px 0;
   border-top: 2px solid var(--plum);
 }
 
-.bathroom-cta-title {
+.cta-band-text {
   flex: 1 1 420px;
 }
 
-.bathroom-cta-title h2 {
+.cta-band-text h2 {
   font-size: 2.25rem;
   margin-bottom: 8px;
 }
 
-.bathroom-cta-title p {
+.cta-band-text p {
   font-size: 1.125rem;
   margin: 0;
 }
@@ -919,12 +919,16 @@ button:focus-visible {
   flex: 1;
   flex-direction: column;
   gap: 2px;
+  font-size: 0.96875rem;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .job-tab-title {
   font-family: "Fredoka", sans-serif;
   font-weight: 600;
   font-size: 1.375rem;
+  line-height: 1.15;
 }
 
 .job-tab-arrow {
@@ -1012,23 +1016,23 @@ button:focus-visible {
 /* Pricing page - calc buttons and shapes */
 
 .calc-legend {
-  width: auto; /* only as wide as its words, so the button can sit beside it */
+  width: auto;
   margin: 0 0 12px;
   font-family: "Fredoka", sans-serif;
   font-weight: 600;
   font-size: 1.375rem;
-  line-height: 38px; /* the same height as the button, so they line up */
+  line-height: 38px;
 }
 .check-map {
-  float: right; /* push it to the right-hand side */
-  clear: none; /* cancel Bootstrap's "drop below the legend" */
+  float: right;
+  clear: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
   margin: 0 0 12px 12px;
 }
 .pick-row {
-  clear: both; /* the pills start on a new line, under both */
+  clear: both;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -1115,7 +1119,7 @@ button:focus-visible {
 
 .estimate-label {
   color: var(--plum-line);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1142,6 +1146,9 @@ button:focus-visible {
 .estimate-lines dt {
   font-weight: 400;
 }
+.estimate-lines dt span {
+  color: var(--plum-line);
+}
 
 .estimate-lines dd {
   margin: 0;
@@ -1161,7 +1168,7 @@ button:focus-visible {
 
 .total-num {
   font-family: "Fredoka", sans-serif;
-  font-size: 52px;
+  font-size: 3.25rem;
   font-weight: 600;
   line-height: 1;
 }
@@ -1194,8 +1201,9 @@ button:focus-visible {
   align-items: center;
   cursor: pointer;
   list-style: none;
+  gap: 12px;
   font-family: "Fredoka", sans-serif;
-  font-size: 22px;
+  font-size: 1.375rem;
   font-weight: 600;
 }
 
@@ -1220,9 +1228,7 @@ button:focus-visible {
   gap: 8px;
 }
 .zone-card-local {
-  --bs-card-bg: var(
-    --lilac
-  ); /* was lilac-tint: the map and the Local pill use lilac */
+  --bs-card-bg: var(--lilac);
 }
 .zone-card-near {
   --bs-card-bg: var(--mint-tint);
@@ -1232,7 +1238,7 @@ button:focus-visible {
 }
 .zone-card-head {
   display: flex;
-  align-items: flex-start; /* was center: the tag stays at the top when a long title wraps */
+  align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
 }
@@ -1256,7 +1262,7 @@ button:focus-visible {
 
 /* Pricing page - the price map bar */
 .map-toggle {
-  display: flex; /* new: icon, words and chevron in a row */
+  display: flex;
   align-items: center;
   gap: 16px;
   width: 100%;
@@ -1273,14 +1279,12 @@ button:focus-visible {
 }
 .map-toggle:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 0 var(--lilac); /* was plum: a plum shadow under a plum bar doesn't show */
+  box-shadow: 0 4px 0 var(--lilac);
 }
 .map-toggle .icon-tile {
-  /* new: the tile's plum border would vanish on the plum bar */
   border-color: var(--lilac);
 }
 .map-toggle-text {
-  /* new: title above the line under it */
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -1328,6 +1332,156 @@ button:focus-visible {
   line-height: 1.4;
 }
 
+/* Pricing page - pane for bathroom installations styling */
+.step-card {
+  gap: 8px;
+}
+.step-num {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--marigold);
+  border: 2px solid var(--plum);
+  border-radius: 999px;
+  font-family: "Fredoka", sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+.step-card h3 {
+  margin: 0;
+  font-size: 1.3125rem;
+}
+.step-card p {
+  margin: 0;
+}
+.fold-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 28px;
+  border-top: 2px solid var(--lilac);
+}
+.fold-wrap h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+.fold-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.fold-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 20px;
+  color: var(--plum);
+  border: 2px solid var(--plum);
+  border-radius: 999px;
+  font-weight: 700;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.fold-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 0 var(--plum);
+}
+.fold-we {
+  background-color: var(--lilac);
+}
+.fold-you {
+  background-color: var(--white);
+}
+.fold-where {
+  background-color: var(--marigold-tint);
+}
+.fold-we:not(.collapsed) {
+  background-color: var(--violet);
+  color: var(--white);
+}
+.fold-you:not(.collapsed) {
+  background-color: var(--plum);
+  color: var(--cream);
+}
+.fold-where:not(.collapsed) {
+  background-color: var(--marigold);
+}
+.fold-pill .chev {
+  transition: transform 0.25s ease;
+}
+.fold-pill:not(.collapsed) .chev {
+  transform: rotate(180deg);
+}
+.fold-panel {
+  flex: 0 0 100%;
+  order: 1;
+}
+.fold-card {
+  gap: 12px;
+}
+.fold-card-we {
+  --bs-card-bg: var(--lilac);
+}
+.fold-card-where {
+  --bs-card-bg: var(--marigold-tint);
+}
+.fold-card p {
+  margin: 0;
+}
+.fold-card .fold-title {
+  font-family: "Fredoka", sans-serif;
+  font-weight: 600;
+  font-size: 1.375rem;
+  line-height: 1.2;
+}
+.fold-card .map-figure {
+  margin-top: 4px;
+}
+
+/* Pricing page - rows that offer the other kind of job */
+.switch-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+}
+.switch-row p {
+  margin: 0;
+  font-size: 1rem;
+}
+.calc-switch {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1.5px solid var(--lilac);
+}
+#pane-projects .switch-row {
+  justify-content: flex-start;
+  margin-top: 36px;
+}
+
+/* "Just need a repair?" card at the end of the projects side */
+.switch-card {
+  padding: 18px 22px;
+  background-color: var(--mint-tint);
+  border: 2px solid var(--plum);
+  border-radius: 24px;
+}
+.switch-card-text {
+  flex: 1 1 220px;
+  line-height: 1.45;
+}
+.switch-row .switch-card-title {
+  font-family: "Fredoka", sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.2;
+}
+
 /* ##### Media Queries ################################################################ */
 
 /* Accessibility - Reduce motion setting: no lift or animation, colour change only */
@@ -1352,14 +1506,20 @@ button:focus-visible {
   .job-tab,
   .pick-pill,
   .charge-details,
-  .map-toggle {
+  .map-toggle,
+  .fold-pill,
+  .fold-pill .chev {
     transition: none;
   }
   .job-tab:hover,
   .pick-pill:hover,
   .charge-details:has(> summary:hover),
-  .map-toggle:hover {
+  .map-toggle:hover,
+  .fold-pill:hover {
     transform: none;
+  }
+  .fold-pill:hover {
+    box-shadow: none;
   }
 }
 
@@ -1385,7 +1545,7 @@ button:focus-visible {
     min-height: 3lh;
   }
   .svc-head {
-    min-height: 3.3rem; /* two lines of a 24px title at line-height 1.1 */
+    min-height: 3.3rem;
   }
 }
 
@@ -1544,7 +1704,8 @@ button:focus-visible {
   .calc-head h3 {
     font-size: 1.625rem;
   }
-  .calc-box {
+  .calc-box,
+  .estimate {
     --bs-card-spacer-x: 18px;
     --bs-card-spacer-y: 18px;
   }
@@ -1557,14 +1718,11 @@ button:focus-visible {
     margin-left: 8px;
   }
   .zone-row {
-    flex-direction: column; /* the area pills stack */
+    flex-direction: column;
   }
   .time-row {
     display: grid;
-    grid-template-columns: repeat(
-      4,
-      minmax(0, 1fr)
-    ); /* four time pills, evenly across */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 6px;
   }
   .time-row .pick-pill {
@@ -1605,7 +1763,28 @@ button:focus-visible {
     font-size: 36px;
   }
   /* Prices page amendments */
+  .job-tab {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+  .job-tab-title {
+    font-size: 1.1875rem; /* 19px, so the words have room on a narrow screen */
+  }
+  #pane-projects .switch-row {
+    padding: 16px 18px;
+  }
   .rate-num {
     font-size: 2rem;
+  }
+
+  /* Price page amendments to second pane */
+  .fold-row {
+    flex-direction: column;
+  }
+  .fold-panel {
+    order: 0;
+  }
+  .fold-pill .chev {
+    margin-left: auto;
   }
 }
