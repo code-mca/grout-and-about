@@ -75,7 +75,7 @@ Each page was scanned with axe-core 4.14 against WCAG 2.0 and 2.1 A and AA plus 
 | Home | 0 | 0 | 35 |
 | Bathrooms and Work | 0 | 0 | 39 |
 | Prices and Areas | 0 | 0 | 48 |
-| Contact us | 0 | 0 | 38 |
+| Contact us | 0 | 0 | 41 |
 | Thank you | 0 | 0 | 30 to 32 |
 | Privacy | 0 | 0 | 31 to 33 |
 
@@ -92,7 +92,7 @@ Every page was tabbed through from top to bottom with the keyboard at 1280px and
 | Home | 27 | 25 | 0 |
 | Bathrooms and Work | 37 | 35 | 0 |
 | Prices and Areas | 20 | 18 | 0 |
-| Contact us | 18 | 16 | 0 |
+| Contact us | 19 | 17 | 0 |
 | Thank you | 12 | 10 | 0 |
 | Privacy | 13 | 11 | 0 |
 
@@ -182,7 +182,7 @@ The hero wave uses CSS `mask`, and the frosted card uses `backdrop-filter`, so S
 | 1. Navigation and responsive layout | Open each page from the navbar and the footer at 390px, 820px and 1440px | Every link works, the current page is underlined, the burger menu appears below 992px with Contact us still showing, and there's no sideways scrolling | Pass. 80 links checked, none broken |
 | 2. Hero and service cards | Open each "What's included" drop-down on the home page | Each opens on its own, the one before closes, and the other cards in the row stay the same size | Pass |
 | 3. Clear pricing | Read the price cards and "How we charge, in full", then try the calculator | Rates, travel charges and VAT are stated, and the calculator total matches the rates | Pass. All 12 combinations correct (below) |
-| 4. Enquiry form | Submit the form empty, with bad values, then with good values | Empty and bad fields are flagged before sending. A good enquiry is sent and the visitor sees the thank-you page | Partly. The checks work, and the Apps Script sends both emails when run from its editor. The form itself sends once the web app address is added to `main.js` |
+| 4. Enquiry form | Submit the form empty, with bad values, then with good values, with and without photos and videos | Empty and bad fields are flagged before sending. A good enquiry is sent and the visitor sees the thank-you page | Partly. The checks and uploads work against a stand-in for Google, and the Apps Script sends both emails when run from its editor. A real enquiry from the live site is the last check |
 | 5. Accessible design | axe-core, keyboard, contrast and image checks above | No violations, every tab stop visible, AA contrast, every image has alt text | Pass |
 | 6. Project examples | Click through each project carousel | Five photos per project, counter updates, captions and labels show | Pass |
 | 7. Service area map | Click Check the map and See the price map | The map opens and the page scrolls to it. The zones match the cards | Pass |
@@ -214,6 +214,27 @@ Every combination of area and job length was clicked through and the total check
 | See repair prices | Click it from the bathroom projects tab | Pass. Repairs tab opens |
 | Form, empty | Press Send enquiry with nothing filled in | Pass. Name is flagged first and nothing is sent |
 | Form, sending | Fill in every field correctly and send (with Apps Script not yet set up) | Pass for the error path. Button shows "Sending…", then "Sorry, that didn't send. Please try again in a few minutes." and the button comes back |
+
+### Photo and video uploads
+
+Tested with Google's address swapped for a stand-in that records what the form sends and replies `{ "ok": true }`.
+
+| Test | Expected | Result |
+|---|---|---|
+| Pick a 1MB JPEG photo, a transparent PNG, a WebM video and an MP4 video | Four rows, numbered and labelled "Photo" or "Video" with the file name. Each label is linked to its own comment box | Pass |
+| Type "  Water under the sink  " as the first comment and send | The comment is sent trimmed, as "Water under the sink" | Pass |
+| The 1MB photo (4032 by 3024 pixels) | Sent as a JPEG of 1600 by 1200, 148KB | Pass |
+| The transparent PNG | Sent as a JPEG with a white background, not black | Pass |
+| Each video | Sent as it is, plus a JPEG still no more than 1600px on its longest side | Pass |
+| Total request with all four files | About 3MB | Pass |
+| Pick seven files | "Please pick up to 6 files." and the form won't send | Pass |
+| Pick a 21MB video | "Your videos come to 21MB. Please keep them under 20MB: shorter clips, or fewer." | Pass |
+| Then pick one photo instead | The message clears and one row shows | Pass |
+| Pick a HEIC photo, which Chrome can't open | "Sorry, we couldn't open phone-photo.heic. Please try a JPEG or PNG photo." Nothing is sent and the button comes back | Pass |
+| Send with no files | `files` is sent as an empty list | Pass |
+| The hidden bot field | Sent empty, and never reached with the Tab key | Pass |
+
+After adding the uploads, the Contact us page still has no HTML errors or warnings, no axe-core violations and no sideways scrolling at 390px. Lighthouse scored 80 (mobile) and 98 (desktop) for Performance and 100 for the other three.
 
 ### Postcode and email checks
 
@@ -286,5 +307,5 @@ Screenshots are in the README under [What the emails look like](README.md#what-t
 |---|---|---|
 | Apps Script web app not deployed yet | The form on the live site can't send. Visitors see "Sorry, that didn't send" | Deploy the web app and paste its address into `ENQUIRY_URL` |
 | Carousel dots are small | Harder to tap on a phone. Lighthouse Accessibility 96 on Bathrooms and Work | Make the dot buttons at least 24px with spacing |
-| Privacy page mentions photos, videos and calculator estimates | The form doesn't collect these yet | Fine once uploads and the estimate carry-over are added. Otherwise, remove those words for now |
+| Privacy page mentions calculator estimates | The form doesn't pass the calculator estimate yet | Fine once the estimate carry-over is added. Otherwise, remove those words for now |
 | No "skip to content" link | Keyboard users tab through the navbar on every page | Add a visually hidden skip link as the first item in `<body>` |

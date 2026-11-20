@@ -34,7 +34,7 @@ The site was built by the owner for the WAES Full Stack course, using HTML, CSS,
   - [Why the form needs JavaScript](#why-the-form-needs-javascript)
   - [What main.js does](#what-mainjs-does)
   - [Google Apps Script](#google-apps-script)
-  - [Photo and video uploads (planned)](#photo-and-video-uploads-planned)
+  - [Photo and video uploads](#photo-and-video-uploads)
 - [Changed mid-flight, and why](#changed-mid-flight-and-why)
 - [Challenges overcome](#challenges-overcome)
 - [Accessibility](#accessibility)
@@ -214,10 +214,13 @@ The hero holds two large tab buttons: **Repairs and small jobs** and **Bathroom 
 - The form asks for name, email, phone, postcode, job type and job description. Every field has a visible label and is required.
 - The browser checks the email format and the postcode against a UK postcode pattern before anything is sent. The first problem field gets focus with a message.
 - `autocomplete` values let phones fill in name, email, phone and postcode.
+- **Photos or videos (optional).** Visitors can add up to six files. Each one gets a row with a small preview and a box for a one-line comment, so John knows what he's looking at. Too many files, or videos over 20MB in total, are flagged straight away ([how it works](#photo-and-video-uploads)).
 - A line under the button explains how the details are used, with a link to the privacy page.
 - On a successful send the visitor goes to the thank-you page. If something goes wrong a message appears under the form and the button comes back so they can try again.
 
 ![The enquiry form with the browser flagging an empty phone field](documentation/features/contact-form.webp)
+
+![The form with two photos and two videos picked, each with a preview and a comment box](documentation/features/uploads.webp)
 
 ### Thank you page
 
@@ -233,21 +236,21 @@ Because the form collects personal details, the site has a privacy page. Article
 
 ### Future features
 
-- **Deploy the Apps Script as a web app** and add its address to `main.js`, so the live form sends (next step).
-- **Photo and video uploads** on the enquiry form, already designed and tested ([details](#photo-and-video-uploads-planned)).
 - **Carry the calculator estimate into the form** so John sees which area and job length the visitor picked.
 
 ---
 
 ## JavaScript and Google Apps Script
 
-All the site's own JavaScript is in one file, `assets/js/main.js` (153 lines). Each block checks that its page's elements exist before doing anything, so the same file can load on every page.
+All the site's own JavaScript is in one file, `assets/js/main.js` (300 lines). Each block checks that its page's elements exist before doing anything, so the same file can load on every page.
 
 ### Why the form needs JavaScript
 
 The aim is simple: the visitor submits the enquiry, then Google Apps Script emails it to John and to the visitor. A plain HTML form could post straight to the Apps Script address with no JavaScript at all. The catch is that the browser would then leave the site and show Google's raw reply, and a mistake in a field would leave the visitor stuck on that page.
 
-A short script fixes this. It stops the normal submit, sends the fields in the background with `fetch`, and then either goes to `thankyou.html` or shows a message under the form. The browser's own required-field and format checks still run first, because the `submit` event only fires once every field passes.
+Photos and videos are a second reason. They have to be shrunk and turned into text before they can travel with the rest of the form, and only the browser can do that before sending.
+
+A short script fixes both. It stops the normal submit, sends the fields in the background with `fetch`, and then either goes to `thankyou.html` or shows a message under the form. The browser's own required-field and format checks still run first, because the `submit` event only fires once every field passes.
 
 ```js
 // The submit event only fires once every field passes the browser's checks
@@ -292,11 +295,12 @@ enquiryForm.addEventListener("submit", async (event) => {
 | Repair visit calculator | Prices and Areas   | Reads the checked area and time on every `change` event. Total = £85 + £40 for each half hour after the first hour + travel (£0, £30 or £50). Updates the line items and the total.                                                                            |
 | Check the map           | Prices and Areas   | Opens the map with Bootstrap's Collapse API, waits for the `shown.bs.collapse` event, then scrolls the map into view. If the map is already open it scrolls straight away.                                                                                     |
 | Tab shortcuts           | Prices and Areas   | Buttons with a `data-show-tab` attribute (See bathroom projects, See repair prices) switch tabs with `bootstrap.Tab.getOrCreateInstance(tab).show()` and scroll back up to the tabs.                                                                           |
-| Sending the enquiry     | Contact us         | The `async` submit handler above. It disables the button while sending, shows a message from the server if a field is wrong, and catches network failures.                                                                                                     |
+| Photo and video list    | Contact us         | When files are picked, checks there are no more than six and that videos come to 20MB or less with `setCustomValidity`, then builds one row per file from a `<template>`, with a preview made by `URL.createObjectURL`. |
+| Sending the enquiry     | Contact us         | The `async` submit handler above. It disables the button while sending, adds any photos and videos, shows a message from the server if a field is wrong, and catches network failures. |
 
 ### Google Apps Script
 
-> **Status on 20 November 2026.** The website side is finished and the Apps Script is set up in the business Google account. It passes 31 automated tests, and a real test run from the Apps Script editor delivered both emails with the PDF attached (see [What the emails look like](#what-the-emails-look-like)). The last step is deploying it as a web app and putting its address in `ENQUIRY_URL` in `main.js`. Until then the live form shows "Sorry, that didn't send".
+> **Status on 20 November 2026.** The Apps Script is set up in the business Google account and deployed as a web app, and its address is in `ENQUIRY_URL` in `main.js`. It passes 31 automated tests, and a real test run from the Apps Script editor delivered both emails with the PDF attached (see [What the emails look like](#what-the-emails-look-like)). The next check is a real enquiry sent from the live site.
 
 Apps Script was chosen because it's free with a Google account, needs no server, and can write to Google Sheets, save to Google Drive and send email from the business's Gmail address.
 
@@ -319,7 +323,7 @@ flowchart TD
 
 What the script does with each enquiry:
 
-1. **Spots bots.** The form will have a hidden field that people never see. If it has anything in it, the script replies "ok" so the bot moves on, but sends and saves nothing.
+1. **Spots bots.** The form has a hidden field that people never see. If it has anything in it, the script replies "ok" so the bot moves on, but sends and saves nothing.
 2. **Checks every field again.** Anyone can post to the script's address without using the form, so it trims each field to a sensible length and checks the email, phone, postcode and job type itself.
 3. **Limits repeats.** It counts rows in the Sheet and refuses a fourth enquiry from the same email address within 24 hours.
 4. **Works out the estimate itself.** If an area and job length are sent, it recalculates the price with the same rates as the calculator. It never trusts a price sent from the page, because anyone can edit a page.
@@ -349,15 +353,34 @@ These are from the first real test on 20 November 2026, run from the Apps Script
 
 The test function sends a calculator estimate, so it shows in all three. Enquiries from the form don't pass the estimate yet, so until that's added ([Future features](#future-features)) John's email will say "They didn't use the calculator" and the customer's email leaves that line out.
 
-### Photo and video uploads (planned)
+### Photo and video uploads
 
-A photo of a leak or a tired bathroom tells John far more than a description. The upload has been designed and tested but isn't on the site yet.
+A photo of a leak or a tired bathroom tells John far more than a description, so the form takes up to six photos or videos, each with a one-line comment (up to 100 characters).
 
-- Up to six photos or videos, with a one-line comment on each (up to 100 characters).
-- **Photos are shrunk in the browser** before sending: drawn onto a canvas at no more than 1600px wide and saved as a JPEG at 75% quality. A white background is painted first so transparent PNGs don't turn black.
-- **Videos can't play in a PDF,** so the browser grabs a still frame half a second in and that goes in the PDF. The full video is saved to Drive.
-- Everything is sent as base64 text in the same JSON request. The script only accepts image and video types and plain base64 characters, and caps the total at 25MB, which is also Google's limit for attachments on one email ([quota table](https://developers.google.com/apps-script/guides/services/quotas)).
+- **Checked as soon as they're picked.** More than six files, or videos over 20MB in total, set a custom message on the file box with `setCustomValidity`. The browser then refuses to submit until it's fixed, the same as a required field.
+- **Photos are shrunk in the browser** before sending: drawn onto a canvas no more than 1600px on the longest side and saved as a JPEG at 75% quality. A white background is painted first, so transparent PNGs don't turn black. In testing, a 1MB photo went out as 148KB.
+- **Videos can't play in a PDF,** so the browser takes a still frame from one second in (or halfway through a very short clip) for the PDF. The video itself is sent as it is and saved to Drive.
+- **A photo the browser can't open** (for example an iPhone HEIC photo in Chrome) stops the send with a message asking for a JPEG or PNG, instead of failing silently.
+- Everything travels as base64 text in the same JSON request. The script only accepts image and video types and plain base64 characters, and refuses more than 25MB in total.
 - Each enquiry's files go in their own Drive folder, with the comment saved as each file's description. The PDF shows each photo or still with its comment, and John's email links to the folder.
+
+```js
+// Draws a picture smaller on a canvas and returns it as a JPEG, in base64 text
+function drawSmaller(picture, width, height) {
+  const scale = Math.min(1, PHOTO_SIZE / Math.max(width, height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(width * scale);
+  canvas.height = Math.round(height * scale);
+
+  const context = canvas.getContext("2d");
+  context.fillStyle = "#ffffff"; // JPEGs can't be see-through, so start with white
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(picture, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL("image/jpeg", 0.75).split(",")[1];
+}
+```
+
+The same function makes the video stills, by passing it the `<video>` element once it has jumped to the right moment.
 
 ---
 
@@ -372,7 +395,7 @@ A photo of a leak or a tired bathroom tells John far more than a description. Th
 | Prices in a Bootstrap table (Issue 3)                                                                                                 | Price cards, a repair visit calculator, a "How we charge, in full" drop-down, and repairs and bathroom projects on separate tabs | Visitors can work out their own visit instead of reading across a table, and the two ways of pricing (set rates and written quotes) don't get mixed up.                                        |
 | Font Awesome icons (the first README)                                                                                                 | Custom SVG icons in the brand colours                                                                                            | Issue 2 asks for icons filled in white, gold, mint or cream so the lilac doesn't show through. The free Font Awesome icons are a single colour.                                                |
 | A three-column footer with stacked links and "Demo site for a WAES course project"                                                    | The brand plus one left-aligned row of links, with Privacy added                                                                 | The stacked links made the footer very tall on phones. The privacy page needed linking from every page.                                                                                        |
-| No uploads                                                                                                                            | Photo and video uploads added to the plan (designed and tested, not live yet)                                                    | So John can see the job before he visits or prices it.                                                                                                                                         |
+| No uploads | Photo and video uploads on the enquiry form, each with a one-line comment | So John can see the job before he visits or prices it. |
 
 ---
 
@@ -486,6 +509,7 @@ Full results are in [TESTING.md](TESTING.md). In summary:
 - **JavaScript:** all 12 calculator combinations give the right total, and the counter, tabs, map button and form were tested by hand and with automated browser tests.
 - **Apps Script:** 31 automated tests pass against stand-in Google services, and a real test in Google delivered both emails and the PDF.
 - **JavaScript style:** JSHint reports no warnings.
+- **Uploads:** the six-file and 20MB limits, photo shrinking, video stills and the message for a photo the browser can't open were all tested with a stand-in for Google.
 
 ---
 

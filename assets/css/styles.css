@@ -1568,9 +1568,14 @@ button:focus-visible {
   left: -9999px;
 }
 
-/* The photos and videos picked, one row each with a comment box */
+/* The help text sits above the rows, so it needs a little space under it */
+.media-help {
+  margin: 0 0 12px;
+}
+
+/* The photos and videos added, one row each with a comment box */
 .media-list {
-  margin: 12px 0 0;
+  margin: 0 0 12px;
   display: flex;
   flex-direction: column; /* rows stacked */
   gap: 12px; /* space between rows */
@@ -1604,9 +1609,63 @@ button:focus-visible {
   min-width: 0; /* lets it shrink, so long file names wrap instead of pushing the row wider */
 }
 
+.media-head {
+  display: flex;
+  align-items: flex-start; /* the Remove button stays at the top if the name wraps */
+  justify-content: space-between; /* name on the left, Remove on the right */
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
 .media-name {
+  margin: 0; /* the gap comes from .media-head instead */
   font-size: 0.875rem;
   overflow-wrap: anywhere; /* breaks long file names like IMG_20261120_164512.jpg */
+}
+
+/* A small outlined pill, so it's clearly a button but quieter than Send */
+.media-remove {
+  flex-shrink: 0; /* never squashed by a long file name */
+  padding: 2px 12px;
+  border: 2px solid var(--plum);
+  border-radius: 999px;
+  background-color: var(--white);
+  color: var(--plum);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.media-remove:hover {
+  background-color: var(--lilac);
+}
+
+/* The Add button is a label for the hidden file box, so it gets the box's focus outline */
+.media-input:focus-visible + .add-media {
+  outline: 3px solid var(--violet);
+  outline-offset: 3px;
+}
+
+.add-media {
+  cursor: pointer; /* labels don't show a pointer on their own */
+}
+
+/* At 6 files the file box is turned off, and the button fades to match */
+.media-input:disabled + .add-media {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Messages under the Add button, such as a video that was too big */
+.media-note {
+  margin: 8px 0 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.media-note:empty {
+  display: none;
 }
 
 /* ##### Thank you page ############################################################### */

@@ -204,19 +204,27 @@
                                 you've already tried</div>
                         </div>
                         <div class="col-12">
-                            <label for="files" class="form-label">Photos or videos <span
-                                    class="label-optional">(optional)</span></label>
-                            <input type="file" class="form-control" id="files" accept="image/*,video/*" multiple
-                                aria-describedby="files-help">
-                            <div id="files-help" class="form-text">The problem, or a bathroom you love. Up to 6 files,
-                                with videos up to 20MB in total. Add a line about each one.</div>
-                            <!-- main.js adds a row here for each file picked, using the template below -->
+                            <p class="form-label" id="files-title">Photos or videos <span
+                                    class="label-optional">(optional)</span></p>
+                            <p id="files-help" class="form-text media-help">The problem, or a bathroom you love. Add up
+                                to 6, one at a time or several at once, with videos up to 20MB in total. Add a line
+                                about each one.</p>
+                            <!-- main.js adds a row here for each file added, using the template below -->
                             <ul class="list-unstyled media-list" id="media-list"></ul>
+                            <!-- The real file box is hidden; the pill-shaped label below opens it -->
+                            <input type="file" class="visually-hidden media-input" id="files" accept="image/*,video/*"
+                                multiple aria-describedby="files-help">
+                            <label for="files" class="btn-pill btn-tint btn-small add-media" id="add-media">Add a photo
+                                or video</label>
+                            <p class="media-note" id="media-note" role="status"></p>
                             <template id="media-template">
                                 <li class="media-item">
                                     <div class="media-thumb"></div>
                                     <div class="media-text">
-                                        <label class="form-label media-name"></label>
+                                        <div class="media-head">
+                                            <label class="form-label media-name"></label>
+                                            <button type="button" class="media-remove">Remove</button>
+                                        </div>
                                         <input type="text" class="form-control media-caption" maxlength="100"
                                             placeholder="What does it show?">
                                     </div>

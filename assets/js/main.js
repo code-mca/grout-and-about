@@ -121,9 +121,14 @@ const enquiryForm = document.querySelector("#enquiry-form");
 if (enquiryForm) {
   const fileInput = enquiryForm.querySelector("#files");
   const mediaList = enquiryForm.querySelector("#media-list");
+  const mediaNote = enquiryForm.querySelector("#media-note");
+  const addButton = enquiryForm.querySelector("#add-media");
   const mediaTemplate = document.querySelector("#media-template");
   const sendButton = enquiryForm.querySelector('button[type="submit"]');
   const formStatus = enquiryForm.querySelector("#form-status");
+
+  // Every photo and video added so far, each with its comment and preview
+  const media = [];
 
   // Shows what went wrong and lets them try again
   const showProblem = (message) => {
@@ -132,17 +137,34 @@ if (enquiryForm) {
     sendButton.textContent = "Send enquiry";
   };
 
-  // One row per picked file: a small preview and a box for a comment
-  const showMedia = (files) => {
-    mediaList.replaceChildren(); // clear any rows from an earlier pick
-    files.forEach((file, index) => {
+  // Adds up the size of every video added so far, in MB
+  const videoMb = () =>
+    media
+      .filter((item) => item.isVideo)
+      .reduce((total, item) => total + item.file.size, 0) /
+    (1024 * 1024);
+
+  // Turns the Add button off at the limit, and changes its words to match
+  const updateAddButton = () => {
+    const full = media.length >= MAX_FILES;
+    fileInput.disabled = full;
+    let words = "Add a photo or video";
+    if (full) words = `${MAX_FILES} files added`;
+    else if (media.length) words = "Add another photo or video";
+    addButton.textContent = words;
+  };
+
+  // Draws one row per file: a small preview, its name, a Remove button and a comment box
+  const showMedia = () => {
+    mediaList.replaceChildren(); // start again, so the numbers stay in order
+    media.forEach((item, index) => {
       const row = mediaTemplate.content.cloneNode(true);
-      const isVideo = file.type.startsWith("video/");
+      const kind = item.isVideo ? "Video" : "Photo";
 
       // A video preview jumps half a second in, so it isn't a black frame
-      const preview = document.createElement(isVideo ? "video" : "img");
-      preview.src = URL.createObjectURL(file) + (isVideo ? "#t=0.5" : "");
-      if (isVideo) {
+      const preview = document.createElement(item.isVideo ? "video" : "img");
+      preview.src = item.preview + (item.isVideo ? "#t=0.5" : "");
+      if (item.isVideo) {
         preview.muted = true;
         preview.playsInline = true;
         preview.preload = "metadata";
@@ -151,36 +173,59 @@ if (enquiryForm) {
       }
       row.querySelector(".media-thumb").append(preview);
 
-      // Give each comment box its own id, so its label can point to it
+      // Each comment box gets its own id, so its label can point to it
       const caption = row.querySelector(".media-caption");
       caption.id = `caption-${index}`;
+      caption.value = item.caption; // keeps what they typed when the rows are redrawn
+      caption.addEventListener("input", () => {
+        item.caption = caption.value;
+      });
       const label = row.querySelector(".media-name");
       label.htmlFor = caption.id;
-      label.textContent = `${isVideo ? "Video" : "Photo"} ${index + 1}: ${file.name}`;
+      label.textContent = `${kind} ${index + 1}: ${item.file.name}`;
+
+      // Remove takes the file out of the list, then redraws the rows
+      const remove = row.querySelector(".media-remove");
+      remove.setAttribute("aria-label", `Remove ${label.textContent}`);
+      remove.addEventListener("click", () => {
+        URL.revokeObjectURL(item.preview); // frees the memory the preview used
+        media.splice(media.indexOf(item), 1);
+        mediaNote.textContent = `${kind} removed.`;
+        showMedia();
+        fileInput.focus(); // so keyboard users aren't left on a button that's gone
+      });
 
       mediaList.append(row);
     });
+    updateAddButton();
   };
 
-  // Check the files as soon as they're picked, then list them
+  // Each time files are picked, add them to the list (up to the limits)
   fileInput.addEventListener("change", () => {
-    const files = [...fileInput.files];
-    const videoBytes = files
-      .filter((file) => file.type.startsWith("video/"))
-      .reduce((total, file) => total + file.size, 0);
-    const videoMb = videoBytes / (1024 * 1024);
+    const problems = [];
 
-    if (files.length > MAX_FILES) {
-      fileInput.setCustomValidity(`Please pick up to ${MAX_FILES} files.`);
-    } else if (videoMb > MAX_VIDEO_MB) {
-      fileInput.setCustomValidity(
-        `Your videos come to ${Math.ceil(videoMb)}MB. Please keep them under ${MAX_VIDEO_MB}MB: shorter clips, or fewer.`,
-      );
-    } else {
-      fileInput.setCustomValidity(""); // empty means no problem
+    for (const file of fileInput.files) {
+      const isVideo = file.type.startsWith("video/");
+      const fileMb = file.size / (1024 * 1024);
+
+      if (media.length >= MAX_FILES) {
+        problems.push(`only ${MAX_FILES} files can be added`);
+        break;
+      }
+      if (isVideo && videoMb() + fileMb > MAX_VIDEO_MB) {
+        problems.push(
+          `${file.name} would take your videos over ${MAX_VIDEO_MB}MB, so try a shorter clip`,
+        );
+        continue;
+      }
+      const preview = URL.createObjectURL(file);
+      media.push({ file, isVideo, preview, caption: "" });
     }
-    fileInput.reportValidity();
-    showMedia(files);
+
+    const note = `Not everything was added: ${problems.join(", and ")}.`;
+    mediaNote.textContent = problems.length ? note : "";
+    fileInput.value = ""; // empties the box, so the same file can be picked again
+    showMedia();
   });
 
   // The submit event only fires once every field passes the browser's checks
@@ -199,12 +244,11 @@ if (enquiryForm) {
 
       // Each photo shrunk, each video as it is with a still from it, and each comment
       data.files = [];
-      for (const [index, file] of [...fileInput.files].entries()) {
-        const caption = mediaList
-          .querySelector(`#caption-${index}`)
-          .value.trim();
+      for (const item of media) {
+        const file = item.file;
+        const caption = item.caption.trim();
 
-        if (file.type.startsWith("video/")) {
+        if (item.isVideo) {
           const still = await takeStill(file).catch(() => "");
           data.files.push({
             name: file.name,
