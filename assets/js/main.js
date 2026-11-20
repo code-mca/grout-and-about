@@ -10,6 +10,25 @@ document.querySelectorAll(".project-carousel").forEach((carousel) => {
   });
 });
 
+/* Carousels: load every slide's photo once the carousel is nearly on screen.
+   loading="lazy" on its own waits until a hidden slide is shown, so its photo
+   only starts loading as it slides in, which leaves a blank block. */
+const carouselWatcher = new IntersectionObserver(
+  (entries, watcher) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.querySelectorAll("img").forEach((img) => {
+        img.loading = "eager"; // start downloading now
+        img.decode().catch(() => {}); // and get it ready to draw, so it appears straight away
+      });
+      watcher.unobserve(entry.target); // each carousel only needs this once
+    });
+  },
+  { rootMargin: "300px" }, // start when the carousel is within 300px of the screen
+);
+
+document.querySelectorAll(".carousel").forEach((carousel) => carouselWatcher.observe(carousel));
+
 /**** Prices & Areas Page ****/
 
 /* The calculator: add up the estimate whenever a pill is picked */
