@@ -133,20 +133,103 @@
                     style="left: 97%; bottom: 115px; --r: -12deg;">
                 <img class="extra-wide-only" src="assets/images/icons/bath-gold.svg" alt="" width="64" height="64"
                     style="left: 20.5%; top: 56.4%; --r: -4deg;">
-                <img class="extra-wide-only" src="assets/images/icons/toilet-roll-gold.svg" alt="" width="64" height="64"
-                    style="left: 65.5%; top: 44.8%; --r: 10deg;">
+                <img class="extra-wide-only" src="assets/images/icons/toilet-roll-gold.svg" alt="" width="64"
+                    height="64" style="left: 65.5%; top: 44.8%; --r: 10deg;">
             </div>
             <!-- Div with the cards -->
             <div class="container hero-inner">
                 <div class="hero-card">
                     <p class="chip">Contact us
                     </p>
-                    <h1 id="hero-title">Tell us what's dripping
+                    <h1 id="hero-title">Everyone needs a guy. We're your bathroom guy.
                     </h1>
                     <p class="hero-intro">
                         Fill in the form and we'll come back with a time and a clear price. Or pick up the phone if
                         that's easier.
                     </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="enquiry-section" aria-labelledby="enquiry-title">
+            <div class="container">
+                <div class="row g-4 align-items-start">
+                    <div class="col-lg-8">
+                        <form id="enquiry-form" class="card card-body form-card">
+                            <h2 id="enquiry-title">
+                                Send an enquiry
+                            </h2>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="full_name" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="full_name" name="full_name"
+                                        autocomplete="name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        autocomplete="email" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="tel" class="form-label">Phone</label>
+                                    <input type="tel" class="form-control" id="tel" name="tel" autocomplete="tel"
+                                        required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="postcode" class="form-label">Postcode</label>
+                                    <input type="text" class="form-control" id="postcode" name="postcode"
+                                        autocomplete="postal-code"
+                                        pattern="[A-Za-z]{1,2}[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}"
+                                        aria-describedby="postcode-help" title="A full UK postcode, for example E8 4DA"
+                                        required>
+                                    <div id="postcode-help" class="form-text">For example E8 4DA</div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="job-type" class="form-label">Job type</label>
+                                    <select class="form-select" id="job-type" name="job-type" required>
+                                        <option value="">Choose a job type</option>
+                                        <option value="small-repair">Small repair</option>
+                                        <option value="bathroom-refresh">Bathroom refresh</option>
+                                        <option value="bathroom-install">Full bathroom installation</option>
+                                        <option value="radiator-repairs">Radiator repair or replacement</option>
+                                        <option value="new-radiators">New radiators</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label for="description" class="form-label">Job description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="5" required
+                                        aria-describedby="description-help"></textarea>
+                                    <div id="description-help" class="form-text">What's happening, where, and anything
+                                        you've already tried</div>
+                                </div>
+                                <div class="col-12 d-flex flex-wrap align-items-center gap-3">
+                                    <button type="submit" class="btn-pill btn-gold">Send enquiry</button>
+                                    <p class="form-note">An enquiry isn't a confirmed appointment. We'll agree a time
+                                        with you first.</p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-4">
+                        <aside class="card card-body talk-box" aria-labelledby="talk-title">
+                            <h2 id="talk-title">Rather talk?</h2>
+                            <ul class="list-unstyled talk-list">
+                                <li><img src="assets/images/ui/phone.svg" alt=""><span
+                                        class="visually-hidden">Phone:</span> #######
+                                </li>
+                                <li><img src="assets/images/ui/mail.svg" alt=""><span
+                                        class="visually-hidden">Email:</span> #######
+                                </li>
+                                <li><img src="assets/images/ui/clock.svg" alt=""><span class="visually-hidden">Opening
+                                        Hours:</span> #######
+                                </li>
+                                <li><img src="assets/images/ui/pin.svg" alt=""><span
+                                        class="visually-hidden">Location:</span> #######
+                                </li>
+                            </ul>
+                        </aside>
+                    </div>
                 </div>
             </div>
         </section>

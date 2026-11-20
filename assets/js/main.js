@@ -73,7 +73,7 @@ if (checkMap && priceMap) {
   });
 }
 
-/* "See bathroom projects" and "See repair prices": switch tabs and go back up to them */
+// "See bathroom projects" and "See repair prices": switch tabs and go back up to them
 document.querySelectorAll("[data-show-tab]").forEach((button) => {
   button.addEventListener("click", () => {
     const tab = document.querySelector(button.dataset.showTab);
@@ -81,3 +81,15 @@ document.querySelectorAll("[data-show-tab]").forEach((button) => {
     tab.scrollIntoView({ behavior: "smooth", block: "center" });
   });
 });
+
+// For contact.html, this sends the enquiry
+// The browser checks the required fields and the postcode pattern first.
+// The submit event only fires once everything is valid.
+const enquiryForm = document.querySelector("#enquiry-form");
+
+if (enquiryForm) {
+  enquiryForm.addEventListener("submit", (event) => {
+    event.preventDefault(); // don't send the form anywhere: GitHub Pages can't receive it
+    window.location.href = "thankyou.html";
+  });
+}
