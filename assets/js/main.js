@@ -82,14 +82,53 @@ document.querySelectorAll("[data-show-tab]").forEach((button) => {
   });
 });
 
-// For contact.html, this sends the enquiry
-// The browser checks the required fields and the postcode pattern first.
-// The submit event only fires once everything is valid.
+/**** Contact Us Page ****/
+
+/* Send the enquiry to our Apps Script, which emails it */
+const ENQUIRY_URL = "https://script.google.com/macros/s/PASTE-YOUR-DEPLOYMENT-ID/exec";
+
 const enquiryForm = document.querySelector("#enquiry-form");
 
 if (enquiryForm) {
-  enquiryForm.addEventListener("submit", (event) => {
-    event.preventDefault(); // don't send the form anywhere: GitHub Pages can't receive it
-    window.location.href = "thankyou.html";
+  const sendButton = enquiryForm.querySelector('button[type="submit"]');
+  const formStatus = enquiryForm.querySelector("#form-status");
+
+  // Shows what went wrong and lets them try again
+  function showProblem(message) {
+    formStatus.textContent = message;
+    sendButton.disabled = false;
+    sendButton.textContent = "Send enquiry";
+  }
+
+  // The submit event only fires once every field passes the browser's checks
+  enquiryForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    sendButton.disabled = true; // stops a second press sending it twice
+    sendButton.textContent = "Sending…";
+    formStatus.textContent = "";
+
+    try {
+      // Every text field, by its name
+      const data = {};
+      for (const [name, value] of new FormData(enquiryForm)) {
+        if (typeof value === "string") data[name] = value.trim();
+      }
+
+      // Plain text, so the browser sends it straight away with no extra check first
+      const response = await fetch(ENQUIRY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+
+      if (result.ok) {
+        window.location.href = "thankyou.html";
+      } else {
+        showProblem(result.message);
+      }
+    } catch (error) {
+      showProblem("Sorry, that didn't send. Please try again in a few minutes.");
+    }
   });
 }
