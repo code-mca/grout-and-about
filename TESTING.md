@@ -33,6 +33,12 @@ Checked with the Nu Html Checker (vnu.jar version 20.6.30), the same checker tha
 | thankyou.html | 0 | 0 |
 | privacy.html | 0 | 0 |
 
+The first run found no errors but six warnings, all now fixed:
+
+- Four carousels had an `aria-label` on a plain `div` with no role. They now have `role="region"` and `aria-roledescription="carousel"`.
+- The list of rate cards on Prices and Areas had an `aria-label` on a `ul`. The section heading already names it, so the label was removed.
+- A comment on Bathrooms and Work ended in `--->` instead of `-->`.
+
 ### CSS
 
 Checked `assets/css/styles.css` with the W3C CSS checker built into the same tool. It reported 22 items, all for newer CSS that the checker doesn't recognise yet. Each one displays as intended in Chrome.
@@ -50,7 +56,11 @@ Checked `assets/css/styles.css` with the W3C CSS checker built into the same too
 
 ### JavaScript
 
-`assets/js/main.js` was checked with JSHint 2.13.6 (settings: `esversion: 11`, `browser: true`, `undef: true`, `unused: true`, with `bootstrap` as a known global). It found no undefined or unused variables. It gave six style warnings, listed under [known issues](#known-issues). The browser console showed no JavaScript errors on any page.
+`assets/js/main.js` was checked with JSHint 2.13.6 (settings: `esversion: 11`, `browser: true`, `undef: true`, `unused: true`, with `bootstrap` as a known global). It reports no warnings. The first two settings are also at the top of `main.js` as comments, so pasting the file into [jshint.com](https://jshint.com/) gives the same result.
+
+The first run gave six style warnings, now fixed. Three functions were declared inside `if` blocks, and are now written as `const` arrow functions. Three ternaries were split over lines before the `?`, and now each label is worked out on one short line first.
+
+The browser console showed no JavaScript errors on any page.
 
 ---
 
@@ -63,7 +73,7 @@ Each page was scanned with axe-core 4.14 against WCAG 2.0 and 2.1 A and AA plus 
 | Page | Violations at 1440px | Violations at 390px | Rules passed |
 |---|---|---|---|
 | Home | 0 | 0 | 35 |
-| Bathrooms and Work | 0 | 0 | 35 |
+| Bathrooms and Work | 0 | 0 | 39 |
 | Prices and Areas | 0 | 0 | 48 |
 | Contact us | 0 | 0 | 38 |
 | Thank you | 0 | 0 | 30 to 32 |
@@ -72,7 +82,6 @@ Each page was scanned with axe-core 4.14 against WCAG 2.0 and 2.1 A and AA plus 
 axe also lists items it can't decide on its own:
 
 - **Colour contrast "needs review"** on text that sits over the frosted hero card or the tick-list icons, because axe can't work out a background colour from a blurred or image background. That text is plum on cream, white or lilac, which is 8.7:1 or higher (see the [README contrast table](README.md#colour-palette)).
-- **`aria-label` on the four carousels.** The label sits on a plain `div` with no role, so some screen readers ignore it. See [known issues](#known-issues).
 
 ### Keyboard
 
@@ -100,27 +109,27 @@ On phones there are two fewer stops because the three page links sit inside the 
 
 Lighthouse 12 was run on each page in its mobile and desktop modes.
 
-> **Read these as a guide, not final scores.** They were run against a local copy where Bootstrap and the fonts were served from the same machine and the Font Awesome script was left out, because the test machine can't reach those outside sites. Performance in particular will be different on the live site. Re-run Lighthouse on the live site from Chrome DevTools before submitting.
+> **Read these as a guide, not final scores.** They were run against a local copy where Bootstrap and the fonts were served from the same machine, because the test machine can't reach those outside sites. Performance in particular will be different on the live site. Re-run Lighthouse on the live site from Chrome DevTools before submitting.
 
 | Page | Mode | Performance | Accessibility | Best Practices | SEO |
 |---|---|---|---|---|---|
-| Home | Mobile | 77 | 100 | 96 | 91 |
-| Home | Desktop | 98 | 100 | 96 | 91 |
-| Bathrooms and Work | Mobile | 72 | 95 | 96 | 91 |
-| Bathrooms and Work | Desktop | 97 | 95 | 96 | 91 |
-| Prices and Areas | Mobile | 72 | 100 | 96 | 91 |
-| Prices and Areas | Desktop | 98 | 100 | 96 | 91 |
-| Contact us | Mobile | 82 | 100 | 96 | 90 |
-| Contact us | Desktop | 99 | 100 | 96 | 90 |
-| Thank you | Mobile | 80 | 100 | 96 | 90 |
-| Thank you | Desktop | 98 | 100 | 96 | 90 |
-| Privacy | Mobile | 89 | 100 | 96 | 90 |
-| Privacy | Desktop | 99 | 100 | 96 | 90 |
+| Home | Mobile | 77 | 100 | 100 | 100 |
+| Home | Desktop | 98 | 100 | 100 | 100 |
+| Bathrooms and Work | Mobile | 72 | 96 | 100 | 100 |
+| Bathrooms and Work | Desktop | 98 | 96 | 100 | 100 |
+| Prices and Areas | Mobile | 72 | 100 | 100 | 100 |
+| Prices and Areas | Desktop | 96 | 100 | 100 | 100 |
+| Contact us | Mobile | 80 | 100 | 100 | 100 |
+| Contact us | Desktop | 98 | 100 | 100 | 100 |
+| Thank you | Mobile | 78 | 100 | 100 | 100 |
+| Thank you | Desktop | 99 | 100 | 100 | 100 |
+| Privacy | Mobile | 90 | 100 | 100 | 100 |
+| Privacy | Desktop | 100 | 100 | 100 | 100 |
 
-Where points were lost:
+The first run scored 96 for Best Practices and 90 or 91 for SEO on every page, because there was no favicon and no page had a meta description. Both are now added.
 
-- **SEO:** no page has a `<meta name="description">`.
-- **Best Practices:** there's no favicon, so every page logs a "404 favicon.ico" error in the console.
+Where points are still lost:
+
 - **Accessibility (Bathrooms and Work only):** the carousel dots are smaller than Lighthouse's recommended touch target size.
 - **Performance (mobile):** the Bootstrap stylesheet blocks the first paint, and most of its rules aren't used. Lighthouse estimated about 1.6 seconds could be saved on its simulated slow phone connection. Cumulative Layout Shift was 0 on every page, because every image has a width and height.
 
@@ -173,8 +182,8 @@ The hero wave uses CSS `mask`, and the frosted card uses `backdrop-filter`, so S
 | 1. Navigation and responsive layout | Open each page from the navbar and the footer at 390px, 820px and 1440px | Every link works, the current page is underlined, the burger menu appears below 992px with Contact us still showing, and there's no sideways scrolling | Pass. 80 links checked, none broken |
 | 2. Hero and service cards | Open each "What's included" drop-down on the home page | Each opens on its own, the one before closes, and the other cards in the row stay the same size | Pass |
 | 3. Clear pricing | Read the price cards and "How we charge, in full", then try the calculator | Rates, travel charges and VAT are stated, and the calculator total matches the rates | Pass. All 12 combinations correct (below) |
-| 4. Enquiry form | Submit the form empty, with bad values, then with good values | Empty and bad fields are flagged before sending. A good enquiry is sent and the visitor sees the thank-you page | Partly. The checks work. Sending is blocked until Apps Script is set up, and the form shows "Sorry, that didn't send" |
-| 5. Accessible design | axe-core, keyboard, contrast and image checks above | No violations, every tab stop visible, AA contrast, every image has alt text | Pass, with the carousel label issue noted |
+| 4. Enquiry form | Submit the form empty, with bad values, then with good values | Empty and bad fields are flagged before sending. A good enquiry is sent and the visitor sees the thank-you page | Partly. The checks work, and the Apps Script sends both emails when run from its editor. The form itself sends once the web app address is added to `main.js` |
+| 5. Accessible design | axe-core, keyboard, contrast and image checks above | No violations, every tab stop visible, AA contrast, every image has alt text | Pass |
 | 6. Project examples | Click through each project carousel | Five photos per project, counter updates, captions and labels show | Pass |
 | 7. Service area map | Click Check the map and See the price map | The map opens and the page scrolls to it. The zones match the cards | Pass |
 | 8. About the owner | Open Bathrooms and Work | Bio, three chips and a carousel with headshot, video and radiator photo | Pass |
@@ -236,7 +245,19 @@ The Apps Script code was run in Node.js with stand-in versions of Google's servi
 | Uploads (14 tests) | Photos and videos saved, other file types and tampered data skipped, comments trimmed, cut to 100 characters, escaped and saved as file descriptions, Drive link in John's email, photos embedded in the PDF, a video's still frame used instead of the video, a video with no still says so, no photos section when none were sent, 7 files refused, 26MB refused |
 | Editor test (1 test) | `testEnquiry` sends both emails |
 
-These tests can't prove the script works inside Google itself. Once it's set up, run `testEnquiry` from the Apps Script editor and send a real enquiry from the live site.
+### Real test in Google
+
+On 20 November 2026 at 16:51, `testEnquiry` was run from the Apps Script editor with the script set up in the business Google account.
+
+| Check | Result |
+|---|---|
+| Business email arrives, subject "New enquiry: Small repair in E8 4DA" | Pass |
+| Ward and borough looked up from the postcode ("London Fields, Hackney") | Pass |
+| Estimate worked out by the script (£155 + parts, up to 20 mins away, 1½ hrs) | Pass |
+| Customer email arrives, greeted by first name, subject "Thanks, Test: we've got your enquiry" | Pass |
+| PDF summary attached to both emails, with reference GA-1120-1651 | Pass |
+
+Screenshots are in the README under [What the emails look like](README.md#what-the-emails-look-like). Still to do once the web app is deployed: send an enquiry from the live site using a different email address as the customer, and check that pressing Reply on the business email goes to that address.
 
 ---
 
@@ -251,20 +272,19 @@ These tests can't prove the script works inside Google itself. Once it's set up,
 | White blocks when moving to the next carousel photo | Lazy-loaded photos in hidden slides only start downloading when shown | IntersectionObserver loads each carousel's photos as it nears the screen ([details](README.md#3-white-blocks-in-the-carousels)) |
 | Check the map scroll stopping short | The scroll started before the map had finished opening | Scroll after `shown.bs.collapse` ([details](README.md#4-check-the-map-stopped-short)) |
 | Very tall footer on phones | Three columns of stacked content | One row of wrapping links ([details](README.md#5-a-very-tall-footer-on-phones)) |
+| Screen readers could ignore the carousel labels | `aria-label` on a `div` with no role | Added `role="region"` and `aria-roledescription="carousel"` |
+| No meta descriptions | Never added | A short description in each page's `<head>` |
+| "404 favicon.ico" error on every page | No favicon | Added an SVG favicon, a 32px PNG and an iPhone home screen icon |
+| An unused Font Awesome script on every page | Left over from the first plan, once the icons became custom SVGs | Removed the script from all six pages |
+| Six JSHint style warnings | Functions declared inside `if` blocks, and ternaries split over lines | Arrow functions, and short one-line labels |
+| Short alt text on the first project's photos ("Bathroom1 mid work") | Placeholder text never replaced | Each photo now describes what it shows. The headshot, soldering photo and video labels were improved too |
+| The first project's dots said "project 2" and "project 3" | The project is one house with two bathrooms and a WC | Labels now say "Show bathroom 1 in progress", "Show the finished WC" and so on |
 
 ### Known issues
 
 | Issue | Effect | Suggested fix |
 |---|---|---|
-| Apps Script not set up yet | The form can't send. Visitors see "Sorry, that didn't send" | Set up the script and paste its URL into `ENQUIRY_URL` |
-| No `role` on the carousels' `div`s | Some screen readers ignore the `aria-label` | Add `role="region" aria-roledescription="carousel"` to each `.carousel` |
-| No meta descriptions | Search results show random page text. Lighthouse SEO 90 or 91 | Add a `<meta name="description">` to each page's `<head>` |
-| No favicon | A 404 error in the console on every page and no icon in the browser tab | Add a favicon and a `<link rel="icon">` |
-| Font Awesome script loaded but not used | An extra download on every page | Remove the `kit.fontawesome.com` script tag from each page |
-| Carousel dots are small | Harder to tap on a phone. Lighthouse Accessibility 95 on Bathrooms and Work | Make the dot buttons at least 24px with spacing |
-| JSHint: three functions declared inside `if` blocks | Style warning only, the code works | Write them as `const updateEstimate = () => { ... }` and so on |
-| JSHint: three line breaks before `?` | Style warning only, from the code formatter | Keep each short ternary on one line |
-| Short alt text on the first project's photos ("Bathroom1 mid work") | Less helpful for screen reader users than the other projects' descriptions | Describe what each photo shows, as the other two projects do |
-| The first project's dot labels say "project 2" and "project 3" | Confusing, because it's one project with two bathrooms and a WC | Use "Bathroom 1 in progress", "WC finished" and so on |
+| Apps Script web app not deployed yet | The form on the live site can't send. Visitors see "Sorry, that didn't send" | Deploy the web app and paste its address into `ENQUIRY_URL` |
+| Carousel dots are small | Harder to tap on a phone. Lighthouse Accessibility 96 on Bathrooms and Work | Make the dot buttons at least 24px with spacing |
 | Privacy page mentions photos, videos and calculator estimates | The form doesn't collect these yet | Fine once uploads and the estimate carry-over are added. Otherwise, remove those words for now |
 | No "skip to content" link | Keyboard users tab through the navbar on every page | Add a visually hidden skip link as the first item in `<body>` |

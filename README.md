@@ -71,16 +71,16 @@ The user stories name eight kinds of visitor: a first-time visitor, a local home
 
 Each story is a GitHub issue with acceptance criteria and tasks. The priority uses MoSCoW (must, should, could have).
 
-| # | User story | Priority | Where it's met |
-|---|---|---|---|
-| [1](https://github.com/code-mca/grout-and-about/issues/1) | As a **first-time visitor**, I want easy navigation and a layout that works on my phone or computer, so I can find what I need quickly, even without any plumbing knowledge. | Must | Shared navbar and footer on every page, burger menu below 992px, Bootstrap grid. No sideways scrolling at 390px, 820px, 1280px or 1440px ([tested](TESTING.md#responsiveness)). |
-| [2](https://github.com/code-mca/grout-and-about/issues/2) | As a **local homeowner**, I want to see straight away what services are offered, so I can tell whether Grout & About can help with my job. | Must | Home page hero and the two service panels, each card with a "What's included" drop-down. |
-| [3](https://github.com/code-mca/grout-and-about/issues/3) | As a **budget-conscious homeowner**, I want to understand how charges work before I get in touch, so I can avoid surprises and decide whether the job is worth doing. | Must | Prices and Areas: price cards, the repair visit calculator, "How we charge, in full" and the six-step bathroom quote process. |
-| [4](https://github.com/code-mca/grout-and-about/issues/4) | As a **customer with a plumbing problem**, I want to send an enquiry describing my job, so I can get a reply without having to phone. | Must | Contact us form with browser checks, then the thank-you page. Sending is waiting on Apps Script ([status](#google-apps-script)). |
-| [5](https://github.com/code-mca/grout-and-about/issues/5) | As a **visitor with a visual impairment**, I want the site to be built in an accessible way, so I can find information and send an enquiry without barriers. | Must | See [Accessibility](#accessibility). axe-core found no violations on any page. |
-| [6](https://github.com/code-mca/grout-and-about/issues/6) | As a **homeowner planning a new bathroom**, I want to see genuine examples of past work, so I can judge the quality before asking for a quote. | Should | Bathrooms and Work: "Recent work", three projects with five photos each. |
-| [7](https://github.com/code-mca/grout-and-about/issues/7) | As a **local resident**, I want to check whether my area is covered, so I know before I make an enquiry. | Should | Prices and Areas: three travel zones and a ward-by-ward map. |
-| [8](https://github.com/code-mca/grout-and-about/issues/8) | As a **person arranging work for a relative**, I want to know who will be coming to the property, so I can feel confident booking on their behalf. | Could | Bathrooms and Work: "Hi, I'm John" with a headshot, a short video and a photo on the job. |
+| #                                                          | User story                                                                                                                                                                   | Priority | Where it's met                                                                                                                                                                  |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [1](https://github.com/code-mca/grout-and-about/issues/1) | As a **first-time visitor**, I want easy navigation and a layout that works on my phone or computer, so I can find what I need quickly, even without any plumbing knowledge. | Must     | Shared navbar and footer on every page, burger menu below 992px, Bootstrap grid. No sideways scrolling at 390px, 820px, 1280px or 1440px ([tested](TESTING.md#responsiveness)). |
+| [2](https://github.com/code-mca/grout-and-about/issues/2) | As a **local homeowner**, I want to see straight away what services are offered, so I can tell whether Grout & About can help with my job.                                   | Must     | Home page hero and the two service panels, each card with a "What's included" drop-down.                                                                                        |
+| [3](https://github.com/code-mca/grout-and-about/issues/3) | As a **budget-conscious homeowner**, I want to understand how charges work before I get in touch, so I can avoid surprises and decide whether the job is worth doing.        | Must     | Prices and Areas: price cards, the repair visit calculator, "How we charge, in full" and the six-step bathroom quote process.                                                   |
+| [4](https://github.com/code-mca/grout-and-about/issues/4) | As a **customer with a plumbing problem**, I want to send an enquiry describing my job, so I can get a reply without having to phone.                                        | Must     | Contact us form with browser checks, then the thank-you page. The Apps Script that sends it is set up and tested ([status](#google-apps-script)).                               |
+| [5](https://github.com/code-mca/grout-and-about/issues/5) | As a **visitor with a visual impairment**, I want the site to be built in an accessible way, so I can find information and send an enquiry without barriers.                 | Must     | See [Accessibility](#accessibility). axe-core found no violations on any page.                                                                                                  |
+| [6](https://github.com/code-mca/grout-and-about/issues/6) | As a **homeowner planning a new bathroom**, I want to see genuine examples of past work, so I can judge the quality before asking for a quote.                               | Should   | Bathrooms and Work: "Recent work", three projects with five photos each.                                                                                                        |
+| [7](https://github.com/code-mca/grout-and-about/issues/7) | As a **local resident**, I want to check whether my area is covered, so I know before I make an enquiry.                                                                     | Should   | Prices and Areas: three travel zones and a ward-by-ward map.                                                                                                                    |
+| [8](https://github.com/code-mca/grout-and-about/issues/8) | As a **person arranging work for a relative**, I want to know who will be coming to the property, so I can feel confident booking on their behalf.                           | Could    | Bathrooms and Work: "Hi, I'm John" with a headshot, a short video and a photo on the job.                                                                                       |
 
 ### How the work was planned
 
@@ -100,22 +100,22 @@ Every colour is set once as a CSS variable in `:root` and reused everywhere. Plu
 
 The contrast ratios below were calculated with the WCAG 2 formula from the hex values in `styles.css`. WCAG AA needs at least 4.5:1 for normal text.
 
-| Text on background | Ratio | AA normal text |
-|---|---|---|
-| Plum on white | 16.1:1 | Pass |
-| Plum on cream | 15.3:1 | Pass |
-| Plum on mint tint | 14.2:1 | Pass |
-| Plum on lilac tint | 13.5:1 | Pass |
-| Plum on marigold tint | 13.2:1 | Pass |
-| Plum on marigold | 10.4:1 | Pass |
-| Plum on mint | 8.8:1 | Pass |
-| Plum on lilac | 8.7:1 | Pass |
-| Cream on plum (header and footer) | 15.3:1 | Pass |
-| Marigold on plum (footer links) | 10.4:1 | Pass |
-| Violet on white | 6.1:1 | Pass |
-| Violet on cream | 5.9:1 | Pass |
-| Violet on lilac tint | 5.2:1 | Pass |
-| Violet on lilac | 3.3:1 | Fail, so this pairing is never used |
+| Text on background                | Ratio  | AA normal text                      |
+| --------------------------------- | ------ | ----------------------------------- |
+| Plum on white                     | 16.1:1 | Pass                                |
+| Plum on cream                     | 15.3:1 | Pass                                |
+| Plum on mint tint                 | 14.2:1 | Pass                                |
+| Plum on lilac tint                | 13.5:1 | Pass                                |
+| Plum on marigold tint             | 13.2:1 | Pass                                |
+| Plum on marigold                  | 10.4:1 | Pass                                |
+| Plum on mint                      | 8.8:1  | Pass                                |
+| Plum on lilac                     | 8.7:1  | Pass                                |
+| Cream on plum (header and footer) | 15.3:1 | Pass                                |
+| Marigold on plum (footer links)   | 10.4:1 | Pass                                |
+| Violet on white                   | 6.1:1  | Pass                                |
+| Violet on cream                   | 5.9:1  | Pass                                |
+| Violet on lilac tint              | 5.2:1  | Pass                                |
+| Violet on lilac                   | 3.3:1  | Fail, so this pairing is never used |
 
 ### Typography
 
@@ -130,6 +130,7 @@ The contrast ratios below were calculated with the WCAG 2 formula from the hex v
 - **Real photos.** Every project photo is John's own work, saved as WebP. The three projects run from before or in progress through to finished.
 - **Bathroom icons.** Twelve icons (bath, shower, loo roll, toilet brush, radiator, spanner, water drop, tap, plunger, rubber duck, soap and bubbles), each in white, gold, mint and cream. They have a plum outline and a solid fill, so the lilac behind them doesn't show through.
 - **UI icons.** Small plum line icons on buttons and cards (clock, wrench, map pin and so on).
+- **Favicon.** The lilac tile and water drop from the logo, as an SVG plus PNG copies for older browsers and iPhone home screens.
 - **Maps.** Two SVG maps of Hackney, Islington and Tower Hamlets, built from Office for National Statistics ward boundaries and coloured by travel charge.
 
 ### Design devices
@@ -232,7 +233,7 @@ Because the form collects personal details, the site has a privacy page. Article
 
 ### Future features
 
-- **Connect the form to Apps Script** so enquiries are actually sent (next step).
+- **Deploy the Apps Script as a web app** and add its address to `main.js`, so the live form sends (next step).
 - **Photo and video uploads** on the enquiry form, already designed and tested ([details](#photo-and-video-uploads-planned)).
 - **Carry the calculator estimate into the form** so John sees which area and job length the visitor picked.
 
@@ -284,18 +285,18 @@ enquiryForm.addEventListener("submit", async (event) => {
 
 ### What main.js does
 
-| Feature | Page | How it works |
-|---|---|---|
-| Slide counter | Bathrooms and Work | Listens for Bootstrap's `slide.bs.carousel` event and writes "2 of 5" using `event.to`, the number of the slide that's coming in. |
-| Carousel preloader | Bathrooms and Work | An `IntersectionObserver` notices when a carousel is within 300px of the screen, switches its photos from `loading="lazy"` to `eager` and calls `img.decode()`, so every slide is ready before it's shown. See [Challenges](#3-white-blocks-in-the-carousels). |
-| Repair visit calculator | Prices and Areas | Reads the checked area and time on every `change` event. Total = £85 + £40 for each half hour after the first hour + travel (£0, £30 or £50). Updates the line items and the total. |
-| Check the map | Prices and Areas | Opens the map with Bootstrap's Collapse API, waits for the `shown.bs.collapse` event, then scrolls the map into view. If the map is already open it scrolls straight away. |
-| Tab shortcuts | Prices and Areas | Buttons with a `data-show-tab` attribute (See bathroom projects, See repair prices) switch tabs with `bootstrap.Tab.getOrCreateInstance(tab).show()` and scroll back up to the tabs. |
-| Sending the enquiry | Contact us | The `async` submit handler above. It disables the button while sending, shows a message from the server if a field is wrong, and catches network failures. |
+| Feature                 | Page               | How it works                                                                                                                                                                                                                                                   |
+| ----------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Slide counter           | Bathrooms and Work | Listens for Bootstrap's `slide.bs.carousel` event and writes "2 of 5" using `event.to`, the number of the slide that's coming in.                                                                                                                              |
+| Carousel preloader      | Bathrooms and Work | An `IntersectionObserver` notices when a carousel is within 300px of the screen, switches its photos from `loading="lazy"` to `eager` and calls `img.decode()`, so every slide is ready before it's shown. See [Challenges](#3-white-blocks-in-the-carousels). |
+| Repair visit calculator | Prices and Areas   | Reads the checked area and time on every `change` event. Total = £85 + £40 for each half hour after the first hour + travel (£0, £30 or £50). Updates the line items and the total.                                                                            |
+| Check the map           | Prices and Areas   | Opens the map with Bootstrap's Collapse API, waits for the `shown.bs.collapse` event, then scrolls the map into view. If the map is already open it scrolls straight away.                                                                                     |
+| Tab shortcuts           | Prices and Areas   | Buttons with a `data-show-tab` attribute (See bathroom projects, See repair prices) switch tabs with `bootstrap.Tab.getOrCreateInstance(tab).show()` and scroll back up to the tabs.                                                                           |
+| Sending the enquiry     | Contact us         | The `async` submit handler above. It disables the button while sending, shows a message from the server if a field is wrong, and catches network failures.                                                                                                     |
 
 ### Google Apps Script
 
-> **Status on 20 November 2026.** The website side is finished: the form and `main.js` are ready to send. The Apps Script code is written and passes 31 automated tests run against stand-in versions of Google's services, but it hasn't been set up in John's Google account yet. Until it is, `ENQUIRY_URL` in `main.js` is a placeholder and the live form shows "Sorry, that didn't send". This section will be updated once it's deployed.
+> **Status on 20 November 2026.** The website side is finished and the Apps Script is set up in the business Google account. It passes 31 automated tests, and a real test run from the Apps Script editor delivered both emails with the PDF attached (see [What the emails look like](#what-the-emails-look-like)). The last step is deploying it as a web app and putting its address in `ENQUIRY_URL` in `main.js`. Until then the live form shows "Sorry, that didn't send".
 
 Apps Script was chosen because it's free with a Google account, needs no server, and can write to Google Sheets, save to Google Drive and send email from the business's Gmail address.
 
@@ -328,6 +329,26 @@ What the script does with each enquiry:
 8. **Makes a PDF** of the enquiry from HTML and attaches it to both emails. John's copy replies to the customer, and the customer's copy replies to John.
 9. **Replies to the browser** with `{ ok: true }` or `{ ok: false, message }`.
 
+The settings the script needs (the business email address, the Sheet's ID and the uploads folder's ID) are kept in the project's **Script Properties**, not in the code. That keeps them out of the code and means they can change without editing it.
+
+#### What the emails look like
+
+These are from the first real test on 20 November 2026, run from the Apps Script editor.
+
+**John's copy.** The job and area come first, because that's what he needs to plan the visit. The ward came from the postcode lookup. Pressing Reply answers the customer, because the email's Reply-To is set to their address.
+
+![The business email: Small repair in London Fields, Hackney, with the estimate, contact details and the PDF attached](documentation/apps-script/business-email.webp)
+
+**The customer's copy.** Friendly, in the same voice as the site, with the estimate they worked out and the same PDF for their records. Their replies go to John.
+
+![The customer email thanking them and confirming the estimate](documentation/apps-script/customer-email.webp)
+
+**The PDF** attached to both emails:
+
+<img src="documentation/apps-script/pdf.webp" alt="The PDF summary with the reference, contact details, job, description and estimate" width="600">
+
+The test function sends a calculator estimate, so it shows in all three. Enquiries from the form don't pass the estimate yet, so until that's added ([Future features](#future-features)) John's email will say "They didn't use the calculator" and the customer's email leaves that line out.
+
 ### Photo and video uploads (planned)
 
 A photo of a leak or a tired bathroom tells John far more than a description. The upload has been designed and tested but isn't on the site yet.
@@ -342,16 +363,16 @@ A photo of a leak or a tired bathroom tells John far more than a description. Th
 
 ## Changed mid-flight, and why
 
-| What the plan said | What was built | Why |
-|---|---|---|
-| Three pages: Home, Services and Contact (the first README) | Six pages: Home, Bathrooms and Work, Prices and Areas, Contact us, Thank you and Privacy | The user stories needed more room than one services page: real project photos, a price calculator and an area map. The privacy page became necessary once the form collected personal details. |
-| "The form is front-end only for this project, so no message is actually sent" (Issue 4) | The form sends each enquiry to Google Apps Script, which logs it and emails it to both sides (being set up) | A form that sends nothing is no use to a real business. John wanted enquiries in his inbox and a copy for the customer. |
-| A "Rather talk?" box beside the form with phone, email, hours and area (Issue 4), and a "Get in touch" column in the footer (Issue 1) | Both removed. The enquiry form is the only way in | One route in means every enquiry arrives with the same details, in the same place, ready to price. |
-| Success page called `enquiry-sent.html` (Issues 1 and 4) | `thankyou.html` | The page was built under that name, so the redirect, links and build guide were updated to match. |
-| Prices in a Bootstrap table (Issue 3) | Price cards, a repair visit calculator, a "How we charge, in full" drop-down, and repairs and bathroom projects on separate tabs | Visitors can work out their own visit instead of reading across a table, and the two ways of pricing (set rates and written quotes) don't get mixed up. |
-| Font Awesome icons (the first README) | Custom SVG icons in the brand colours | Issue 2 asks for icons filled in white, gold, mint or cream so the lilac doesn't show through. The free Font Awesome icons are a single colour. |
-| A three-column footer with stacked links and "Demo site for a WAES course project" | The brand plus one left-aligned row of links, with Privacy added | The stacked links made the footer very tall on phones. The privacy page needed linking from every page. |
-| No uploads | Photo and video uploads added to the plan (designed and tested, not live yet) | So John can see the job before he visits or prices it. |
+| What the plan said                                                                                                                    | What was built                                                                                                                   | Why                                                                                                                                                                                            |
+| ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Three pages: Home, Services and Contact (the first README)                                                                            | Six pages: Home, Bathrooms and Work, Prices and Areas, Contact us, Thank you and Privacy                                         | The user stories needed more room than one services page: real project photos, a price calculator and an area map. The privacy page became necessary once the form collected personal details. |
+| "The form is front-end only for this project, so no message is actually sent" (Issue 4)                                               | The form sends each enquiry to Google Apps Script, which logs it and emails it to both sides (being set up)                      | A form that sends nothing is no use to a real business. John wanted enquiries in his inbox and a copy for the customer.                                                                        |
+| A "Rather talk?" box beside the form with phone, email, hours and area (Issue 4), and a "Get in touch" column in the footer (Issue 1) | Both removed. The enquiry form is the only way in                                                                                | One route in means every enquiry arrives with the same details, in the same place, ready to price.                                                                                             |
+| Success page called `enquiry-sent.html` (Issues 1 and 4)                                                                              | `thankyou.html`                                                                                                                  | The page was built under that name, so the redirect, links and build guide were updated to match.                                                                                              |
+| Prices in a Bootstrap table (Issue 3)                                                                                                 | Price cards, a repair visit calculator, a "How we charge, in full" drop-down, and repairs and bathroom projects on separate tabs | Visitors can work out their own visit instead of reading across a table, and the two ways of pricing (set rates and written quotes) don't get mixed up.                                        |
+| Font Awesome icons (the first README)                                                                                                 | Custom SVG icons in the brand colours                                                                                            | Issue 2 asks for icons filled in white, gold, mint or cream so the lilac doesn't show through. The free Font Awesome icons are a single colour.                                                |
+| A three-column footer with stacked links and "Demo site for a WAES course project"                                                    | The brand plus one left-aligned row of links, with Privacy added                                                                 | The stacked links made the footer very tall on phones. The privacy page needed linking from every page.                                                                                        |
+| No uploads                                                                                                                            | Photo and video uploads added to the plan (designed and tested, not live yet)                                                    | So John can see the job before he visits or prices it.                                                                                                                                         |
 
 ---
 
@@ -373,8 +394,8 @@ A photo of a leak or a tired bathroom tells John far more than a description. Th
 }
 ```
 
-| Before | After |
-|---|---|
+| Before                                                                   | After                                                                               |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
 | ![Cream strip under the wave](documentation/challenges/wave-before.webp) | ![The wave blends into the lilac section](documentation/challenges/wave-after.webp) |
 
 ### 2. The thank-you page icons were bunched up on the right
@@ -385,8 +406,8 @@ A photo of a leak or a tired bathroom tells John far more than a description. Th
 
 **Fix.** The icon layer was rebuilt in zones: a row along the top, two staggered columns on each side of the card and a row along the bottom. Icons on the right use `right` instead of `left`, so they mirror the left side at any screen width. Extra icons only appear on very wide screens (from 1800px and 2240px), using `.wide-only` and `.extra-wide-only` classes.
 
-| Before | After |
-|---|---|
+| Before                                                                    | After                                                                           |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | ![Icons crowded on the right](documentation/challenges/icons-before.webp) | ![Icons spread evenly on both sides](documentation/challenges/icons-after.webp) |
 
 ### 3. White blocks in the carousels
@@ -399,8 +420,8 @@ A photo of a leak or a tired bathroom tells John far more than a description. Th
 
 On a test connection throttled to 1.5 Mbps, 1 of the 5 photos in the first project was ready before the first click without the fix, and all 5 with it.
 
-| Before (mid-slide, photo not loaded) | After (mid-slide, photo ready) |
-|---|---|
+| Before (mid-slide, photo not loaded)                                              | After (mid-slide, photo ready)                                                          |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | ![The next slide is a white block](documentation/challenges/carousel-before.webp) | ![The next photo slides in straight away](documentation/challenges/carousel-after.webp) |
 
 ### 4. Check the map stopped short
@@ -431,8 +452,8 @@ bootstrap.Collapse.getOrCreateInstance(priceMap, { toggle: false }).show();
 }
 ```
 
-| Before | After |
-|---|---|
+| Before                                                              | After                                                                     |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | ![Three-column footer](documentation/challenges/footer-before.webp) | ![Brand and one row of links](documentation/challenges/footer-after.webp) |
 
 ---
@@ -445,6 +466,7 @@ bootstrap.Collapse.getOrCreateInstance(priceMap, { toggle: false }).show();
 - Every image has `width` and `height`, so the page doesn't jump as photos load.
 - Every form field has a visible label. Email and phone use the `email` and `tel` input types, and name, email, phone and postcode have `autocomplete` values.
 - The maps are inline SVGs with `role="img"` and a `<title>`, and the zone cards next to them give the same information as text.
+- Each carousel is a labelled region (`role="region"` and `aria-roledescription="carousel"`), and every carousel dot has a label saying which photo it shows.
 - Visible focus outlines: violet on light backgrounds and marigold in the plum header and footer.
 - The floating icons and button lifts switch off for anyone who has turned on reduced motion (`prefers-reduced-motion`).
 - The video is muted and has controls.
@@ -456,13 +478,14 @@ bootstrap.Collapse.getOrCreateInstance(priceMap, { toggle: false }).show();
 
 Full results are in [TESTING.md](TESTING.md). In summary:
 
-- **HTML:** no errors or warnings on any of the six pages (W3C Nu Html Checker).
+- **HTML:** no errors or warnings on any of the six pages (W3C Nu Html Checker). The first run found six warnings, all now fixed.
 - **CSS:** the only reports are for newer CSS features the W3C CSS checker doesn't recognise yet, such as `:has()`, `lh` units and `backdrop-filter`.
 - **Accessibility:** no axe-core violations on any page at desktop or phone width.
-- **Lighthouse:** Accessibility 95 to 100 and Best Practices 96 on every page.
+- **Lighthouse:** Accessibility 96 to 100, and Best Practices and SEO 100 on every page.
 - **Responsive:** no sideways scrolling on any page at 390px, 820px or 1440px.
 - **JavaScript:** all 12 calculator combinations give the right total, and the counter, tabs, map button and form were tested by hand and with automated browser tests.
-- **Apps Script:** 31 automated tests pass against stand-in Google services.
+- **Apps Script:** 31 automated tests pass against stand-in Google services, and a real test in Google delivered both emails and the PDF.
+- **JavaScript style:** JSHint reports no warnings.
 
 ---
 
@@ -550,4 +573,4 @@ Then open `http://localhost:8000`. Use a local server rather than opening the fi
 
 ### AI assistance
 
-Claude (Anthropic) was used as a tutor and pair programmer on this project. It helped draft the user stories, wrote a step-by-step build guide that the site was built from, suggested and in places applied code changes, drew the bathroom icons, the wave and the maps (these SVG files carry Claude content credentials), and produced the screenshots and automated tests for this README and TESTING.md.
+Claude (Anthropic) was used as a tutor and pair programmer on this project. It helped draft the user stories, wrote a step-by-step build guide that John used to build the sections of the website over the course of a week, suggested and in places applied code changes, drew custom icons, wave and maps (these SVG files carry Claude content credentials), and produced the screenshots and automated tests for this README and TESTING.md.

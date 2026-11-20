@@ -1,3 +1,6 @@
+/* jshint esversion: 11 */
+/* global bootstrap */
+
 /**** Bathroom & Work Page ****/
 
 /* Adding JS as auto-counter for project slide number */
@@ -27,7 +30,9 @@ const carouselWatcher = new IntersectionObserver(
   { rootMargin: "300px" }, // start when the carousel is within 300px of the screen
 );
 
-document.querySelectorAll(".carousel").forEach((carousel) => carouselWatcher.observe(carousel));
+document
+  .querySelectorAll(".carousel")
+  .forEach((carousel) => carouselWatcher.observe(carousel));
 
 /**** Prices & Areas Page ****/
 
@@ -38,7 +43,7 @@ if (calc) {
   const zoneNames = { 0: "local", 30: "up to 20 mins", 50: "further out" };
   const timeNames = { 30: "30 mins", 60: "1 hr", 120: "2 hrs" };
 
-  function updateEstimate() {
+  const updateEstimate = () => {
     const travel = Number(
       calc.querySelector('input[name="zone"]:checked').value,
     );
@@ -48,18 +53,17 @@ if (calc) {
     const extraMinutes = minutes - 60;
     const extra = (extraMinutes / 30) * 40;
 
-    calc.querySelector("#extra-label").textContent = extraMinutes
-      ? `(${timeNames[extraMinutes]})`
-      : "";
-    calc.querySelector("#extra-price").textContent = extra
-      ? `£${extra}`
-      : "None";
+    // Work out each label first, so each line stays short
+    const extraLabel = extraMinutes ? `(${timeNames[extraMinutes]})` : "";
+    const extraPrice = extra ? `£${extra}` : "None";
+    const travelPrice = travel ? `£${travel}` : "Included";
+
+    calc.querySelector("#extra-label").textContent = extraLabel;
+    calc.querySelector("#extra-price").textContent = extraPrice;
     calc.querySelector("#travel-label").textContent = `(${zoneNames[travel]})`;
-    calc.querySelector("#travel-price").textContent = travel
-      ? `£${travel}`
-      : "Included";
+    calc.querySelector("#travel-price").textContent = travelPrice;
     calc.querySelector("#total-price").textContent = `£${85 + extra + travel}`;
-  }
+  };
 
   calc.addEventListener("change", updateEstimate);
   updateEstimate();
@@ -73,9 +77,9 @@ if (checkMap && priceMap) {
   const mapButton = document.querySelector("#price-map-btn");
 
   // Scroll so the See the price map bar sits at the top, with the map below it
-  function scrollToMap() {
+  const scrollToMap = () => {
     mapButton.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+  };
 
   checkMap.addEventListener("click", () => {
     if (priceMap.classList.contains("show")) {
@@ -104,7 +108,8 @@ document.querySelectorAll("[data-show-tab]").forEach((button) => {
 /**** Contact Us Page ****/
 
 /* Send the enquiry to our Apps Script, which emails it */
-const ENQUIRY_URL = "https://script.google.com/macros/s/PASTE-YOUR-DEPLOYMENT-ID/exec";
+const ENQUIRY_URL =
+  "https://script.google.com/macros/s/AKfycbyW0i0SeE-TSK7VsIRIJq4erFEmnUwmK4u2Rj7eglpEEKCK2UG7SOgDTwm39LfFxNE9/exec";
 
 const enquiryForm = document.querySelector("#enquiry-form");
 
@@ -113,11 +118,11 @@ if (enquiryForm) {
   const formStatus = enquiryForm.querySelector("#form-status");
 
   // Shows what went wrong and lets them try again
-  function showProblem(message) {
+  const showProblem = (message) => {
     formStatus.textContent = message;
     sendButton.disabled = false;
     sendButton.textContent = "Send enquiry";
-  }
+  };
 
   // The submit event only fires once every field passes the browser's checks
   enquiryForm.addEventListener("submit", async (event) => {
@@ -147,7 +152,9 @@ if (enquiryForm) {
         showProblem(result.message);
       }
     } catch (error) {
-      showProblem("Sorry, that didn't send. Please try again in a few minutes.");
+      showProblem(
+        "Sorry, that didn't send. Please try again in a few minutes.",
+      );
     }
   });
 }
