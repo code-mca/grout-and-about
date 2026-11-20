@@ -107,13 +107,21 @@ document.querySelectorAll("[data-show-tab]").forEach((button) => {
 
 /**** Contact Us Page ****/
 
-/* Send the enquiry to our Apps Script, which emails it */
+/* Send the enquiry, with any photos and videos, to our Apps Script, which emails it */
 const ENQUIRY_URL =
   "https://script.google.com/macros/s/AKfycbyW0i0SeE-TSK7VsIRIJq4erFEmnUwmK4u2Rj7eglpEEKCK2UG7SOgDTwm39LfFxNE9/exec";
+
+/* Limits for photos and videos */
+const MAX_FILES = 6;
+const MAX_VIDEO_MB = 20; // videos are sent as they are, so keep them short
+const PHOTO_SIZE = 1600; // photos are shrunk so their longest side is this many pixels
 
 const enquiryForm = document.querySelector("#enquiry-form");
 
 if (enquiryForm) {
+  const fileInput = enquiryForm.querySelector("#files");
+  const mediaList = enquiryForm.querySelector("#media-list");
+  const mediaTemplate = document.querySelector("#media-template");
   const sendButton = enquiryForm.querySelector('button[type="submit"]');
   const formStatus = enquiryForm.querySelector("#form-status");
 
@@ -123,6 +131,57 @@ if (enquiryForm) {
     sendButton.disabled = false;
     sendButton.textContent = "Send enquiry";
   };
+
+  // One row per picked file: a small preview and a box for a comment
+  const showMedia = (files) => {
+    mediaList.replaceChildren(); // clear any rows from an earlier pick
+    files.forEach((file, index) => {
+      const row = mediaTemplate.content.cloneNode(true);
+      const isVideo = file.type.startsWith("video/");
+
+      // A video preview jumps half a second in, so it isn't a black frame
+      const preview = document.createElement(isVideo ? "video" : "img");
+      preview.src = URL.createObjectURL(file) + (isVideo ? "#t=0.5" : "");
+      if (isVideo) {
+        preview.muted = true;
+        preview.playsInline = true;
+        preview.preload = "metadata";
+      } else {
+        preview.alt = ""; // the label next to it already names the file
+      }
+      row.querySelector(".media-thumb").append(preview);
+
+      // Give each comment box its own id, so its label can point to it
+      const caption = row.querySelector(".media-caption");
+      caption.id = `caption-${index}`;
+      const label = row.querySelector(".media-name");
+      label.htmlFor = caption.id;
+      label.textContent = `${isVideo ? "Video" : "Photo"} ${index + 1}: ${file.name}`;
+
+      mediaList.append(row);
+    });
+  };
+
+  // Check the files as soon as they're picked, then list them
+  fileInput.addEventListener("change", () => {
+    const files = [...fileInput.files];
+    const videoBytes = files
+      .filter((file) => file.type.startsWith("video/"))
+      .reduce((total, file) => total + file.size, 0);
+    const videoMb = videoBytes / (1024 * 1024);
+
+    if (files.length > MAX_FILES) {
+      fileInput.setCustomValidity(`Please pick up to ${MAX_FILES} files.`);
+    } else if (videoMb > MAX_VIDEO_MB) {
+      fileInput.setCustomValidity(
+        `Your videos come to ${Math.ceil(videoMb)}MB. Please keep them under ${MAX_VIDEO_MB}MB: shorter clips, or fewer.`,
+      );
+    } else {
+      fileInput.setCustomValidity(""); // empty means no problem
+    }
+    fileInput.reportValidity();
+    showMedia(files);
+  });
 
   // The submit event only fires once every field passes the browser's checks
   enquiryForm.addEventListener("submit", async (event) => {
@@ -136,6 +195,36 @@ if (enquiryForm) {
       const data = {};
       for (const [name, value] of new FormData(enquiryForm)) {
         if (typeof value === "string") data[name] = value.trim();
+      }
+
+      // Each photo shrunk, each video as it is with a still from it, and each comment
+      data.files = [];
+      for (const [index, file] of [...fileInput.files].entries()) {
+        const caption = mediaList
+          .querySelector(`#caption-${index}`)
+          .value.trim();
+
+        if (file.type.startsWith("video/")) {
+          const still = await takeStill(file).catch(() => "");
+          data.files.push({
+            name: file.name,
+            type: file.type,
+            data: await readFile(file),
+            still,
+            caption,
+          });
+        } else {
+          let photo;
+          try {
+            photo = await shrinkPhoto(file);
+          } catch (error) {
+            return showProblem(
+              `Sorry, we couldn't open ${file.name}. Please try a JPEG or PNG photo.`,
+            );
+          }
+          const name = file.name.replace(/\.[^.]+$/, "") + ".jpg";
+          data.files.push({ name, type: "image/jpeg", data: photo, caption });
+        }
       }
 
       // Plain text, so the browser sends it straight away with no extra check first
@@ -156,5 +245,56 @@ if (enquiryForm) {
         "Sorry, that didn't send. Please try again in a few minutes.",
       );
     }
+  });
+}
+
+/* Photos and videos: helpers used when sending */
+
+// Draws a picture smaller on a canvas and returns it as a JPEG, in base64 text
+function drawSmaller(picture, width, height) {
+  const scale = Math.min(1, PHOTO_SIZE / Math.max(width, height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(width * scale);
+  canvas.height = Math.round(height * scale);
+
+  const context = canvas.getContext("2d");
+  context.fillStyle = "#ffffff"; // JPEGs can't be see-through, so start with white
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.drawImage(picture, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL("image/jpeg", 0.75).split(",")[1];
+}
+
+// A photo, shrunk so it's quick to send and fits in the PDF
+async function shrinkPhoto(file) {
+  const photo = await createImageBitmap(file);
+  return drawSmaller(photo, photo.width, photo.height);
+}
+
+// A still picture from a second into the video (or halfway, for very short clips)
+function takeStill(file) {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement("video");
+    video.muted = true;
+    video.playsInline = true;
+    video.onloadedmetadata = () => {
+      video.currentTime = Math.min(1, video.duration / 2);
+    };
+    video.onseeked = () => {
+      resolve(drawSmaller(video, video.videoWidth, video.videoHeight));
+      URL.revokeObjectURL(video.src);
+    };
+    video.onerror = () => reject(video.error);
+    setTimeout(() => reject(new Error("No still in time")), 8000);
+    video.src = URL.createObjectURL(file);
+  });
+}
+
+// Turns a file into base64 text, which can travel inside the JSON
+function readFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
   });
 }
