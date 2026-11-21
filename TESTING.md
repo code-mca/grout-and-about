@@ -290,11 +290,25 @@ Tested in Chromium with Playwright, against a stand-in for the Apps Script web a
 | Send from plain `contact.html` | Pass. `area` and `minutes` are sent empty |
 | JavaScript errors on the page | Pass. None |
 
-Still to do: send a real enquiry from the live site through the calculator once the updated script is deployed.
+#### Real enquiry through the calculator
+
+On 21 November 2026 at 00:53, an enquiry was sent after picking Further out and 2 hrs on the calculator, with two photos. A second enquiry at 00:49 went straight to Contact us. After the script fixes, another calculator enquiry was sent at 01:57. Screenshots of the 01:57 enquiry, with personal details hidden, are in the README under [A live enquiry through the calculator](README.md#a-live-enquiry-through-the-calculator).
+
+| Check | Result |
+|---|---|
+| The form shows "Your calculator estimate: £215 + parts (further out, about 2 hrs of work)" | Pass |
+| The business email has the estimate: £215 + parts, further out, 2 hrs (£85 + £80 + £50) | Pass |
+| The Sheet's Area, Time and Estimate columns say further out, 2 hrs and 215 | Pass |
+| The enquiry that didn't use the calculator says "They didn't use the calculator" and leaves those columns empty | Pass |
+| Ward looked up from the postcode | Pass |
+| Phone number in the Sheet | 00:53: Fail, "+44…" was saved as a number, so the + was lost. 01:57: Pass, the + is kept. See [fixed bugs](#fixed-bugs) |
+| Travel zone, job length and estimate as three rows, with the breakdown £85 first hour, £80 extra time, £50 travel, parts at cost, in the business email, the customer email and the PDF (01:57) | Pass |
+| The PDF has no "isn't a confirmed appointment" line, and the customer email still has it (01:57) | Pass |
+| The customer is greeted by first name (01:57) | Pass |
 
 ## Apps Script testing
 
-The Apps Script code was run in Node.js with stand-in versions of Google's services (Sheets, Drive, Mail, UrlFetch and the PDF conversion), so its logic could be tested before it's set up in a Google account. All 51 tests pass.
+The Apps Script code was run in Node.js with stand-in versions of Google's services (Sheets, Drive, Mail, UrlFetch and the PDF conversion), so its logic could be tested before it's set up in a Google account. All 55 tests pass.
 
 | Area | What was tested |
 |---|---|
@@ -305,6 +319,7 @@ The Apps Script code was run in Node.js with stand-in versions of Google's servi
 | Uploads (14 tests) | Photos and videos saved, other file types and tampered data skipped, comments trimmed, cut to 100 characters, escaped and saved as file descriptions, Drive link in John's email, photos embedded in the PDF, a video's still frame used instead of the video, a video with no still says so, no photos section when none were sent, 7 files refused, 26MB refused |
 | Editor test (1 test) | `testEnquiry` sends both emails |
 | Calculator estimate (11 tests) | For three area and time pairs (£155, £85 and £295), the travel zone, job length, estimate and its breakdown appear in both emails and the PDF, and the Area, Time and Estimate columns are filled. With no estimate, both emails and the PDF say so. Edited values, including built-in object names like `toString` and `__proto__`, give no estimate but the enquiry still goes through, and `__proto__` as a job type is refused |
+| Sheet (4 tests) | Phone numbers starting with + or 0, and a name or description starting with =, + or -, are saved as text, and ordinary text is saved as it is |
 | Appointment line (1 test) | "An enquiry isn't a confirmed appointment" is in the customer's email only, not in the business email or the PDF |
 | Greeting (8 tests) | "Sam Jones" is greeted as Sam, "Mr J Smith" as Mr Smith, "Dr. Ana Lee" as Dr Lee, "J Smith" as J Smith, and a one-word name as itself |
 
@@ -359,6 +374,8 @@ Screenshots are in the README under [What the emails look like](README.md#what-t
 | Six JSHint style warnings | Functions declared inside `if` blocks, and ternaries split over lines | Arrow functions, and short one-line labels |
 | Short alt text on the first project's photos ("Bathroom1 mid work") | Placeholder text never replaced | Each photo now describes what it shows. The headshot, soldering photo and video labels were improved too |
 | The first project's dots said "project 2" and "project 3" | The project is one house with two bathrooms and a WC | Labels now say "Show bathroom 1 in progress", "Show the finished WC" and so on |
+| Script changes didn't reach the site (live test, 21 November) | The new code was deployed with **New deployment**, which made a second web app at a new address. The site still sent enquiries to the first one, which kept running the old code | Redeployed the original deployment with **New version** from **Manage deployments**. The script now has a `VERSION` label that the web app address shows in a browser, so it's easy to see which code is live |
+| Phone numbers lost their + in the Sheet (live test, 21 November) | `appendRow` lets Sheets read what it's given like typing, so +447700900123 became a number. A number starting 0 would lose its 0, and text starting with = would run as a formula | The script puts a ' in front of the phone number, and of any name, email or description starting with =, +, - or @. Sheets keeps it as text and doesn't show the '. 4 new tests |
 | Entering `E8` as the postcode gave no reason why it wouldn't send (live test, 21 November) | The form relied on the browser's own pop-up, which shows briefly, for one field at a time, in the browser's wording, and in this test didn't show at all | Each field now has its own message underneath, saying what's wrong and giving an example. See [Field messages](#field-messages) |
 | Calculator estimate didn't reach the form (live test, 21 November) | Send an enquiry on the calculator was a plain link to `contact.html`, so the area and time weren't passed on | The link now carries the area and time, the form shows the estimate and sends both, and the emails and PDF show the travel zone, job length and price breakdown. 23 browser checks and 8 new script tests |
 | Built-in names got past the checks | `areas[area]` is also true for names every object has, like `toString` or `__proto__`, so an edited address showed a broken estimate, and a crafted request with `__proto__` as the job type passed the script's check | `main.js` and the script now check the value is one of their own keys with `Object.keys(list).includes(key)`. 3 new tests |

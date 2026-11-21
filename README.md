@@ -314,7 +314,7 @@ enquiryForm.addEventListener("submit", async (event) => {
 
 ### Google Apps Script
 
-> **Status on 20 November 2026: live.** The Apps Script is deployed as a web app in the business Google account, and its address is in `ENQUIRY_URL` in `main.js`. It passes 51 automated tests, and a real enquiry sent from the live site with two photos arrived as expected: both emails, the PDF with the photos and their comments, and a Drive folder (see [A real enquiry from the live site](#a-real-enquiry-from-the-live-site)).
+> **Status on 20 November 2026: live.** The Apps Script is deployed as a web app in the business Google account, and its address is in `ENQUIRY_URL` in `main.js`. It passes 55 automated tests, and a real enquiry sent from the live site with two photos arrived as expected: both emails, the PDF with the photos and their comments, and a Drive folder (see [A real enquiry from the live site](#a-real-enquiry-from-the-live-site)).
 
 Apps Script was chosen because it's free with a Google account, needs no server, and can write to Google Sheets, save to Google Drive and send email from the business's Gmail address.
 
@@ -343,13 +343,38 @@ What the script does with each enquiry:
 4. **Works out the estimate itself.** If an area and job length are sent, it recalculates the price with the same rates as the calculator. It never trusts a price sent from the page, because anyone can edit a page.
 5. **Looks up the postcode** with [postcodes.io](https://postcodes.io/) to add the ward and borough. If that service is down, it carries on without them.
 6. **Gives the enquiry a reference** such as GA-1120-1432 (month, day, hour and minute).
-7. **Checks the email allowance.** Each enquiry sends two emails. A free Google account can send to 100 recipients a day from Apps Script ([Google's quota table](https://developers.google.com/apps-script/guides/services/quotas)), so the script checks what's left first. If there's no room it still logs the enquiry with "Not emailed: daily limit reached".
-8. **Makes a PDF** of the enquiry from HTML and attaches it to both emails. John's copy replies to the customer, and the customer's copy replies to John.
-9. **Replies to the browser** with `{ ok: true }` or `{ ok: false, message }`.
+7. **Adds a row to the Sheet.** Phone numbers, and anything that starts with =, +, - or @, are saved as text. Otherwise Sheets turns +447700900123 into a number and drops the +, drops the 0 from 07700900123, and would treat a description starting with = as a formula.
+8. **Checks the email allowance.** Each enquiry sends two emails. A free Google account can send to 100 recipients a day from Apps Script ([Google's quota table](https://developers.google.com/apps-script/guides/services/quotas)), so the script checks what's left first. If there's no room it still logs the enquiry with "Not emailed: daily limit reached".
+9. **Makes a PDF** of the enquiry from HTML and attaches it to both emails. John's copy replies to the customer, and the customer's copy replies to John.
+10. **Replies to the browser** with `{ ok: true }` or `{ ok: false, message }`.
 
 The settings the script needs (the business email address, the Sheet's ID and the uploads folder's ID) are kept in the project's **Script Properties**, not in the code. That keeps them out of the code and means they can change without editing it.
 
 #### What the emails look like
+
+#### A live enquiry through the calculator
+
+Sent on 21 November 2026 at 01:57 after picking Further out and 2 hrs on the calculator, with one photo. The sender's name, email, phone, postcode and ward are hidden for privacy.
+
+**The form** shows the estimate carried over from Prices and Areas:
+
+![The enquiry form with the box "Your calculator estimate: £215 + parts (further out, about 2 hrs of work)" above the fields, with personal details hidden](documentation/apps-script/calculator-form.webp)
+
+**The owner's copy.** The travel zone, job length and estimate sit under the postcode, with each part of the price on the second line, the same sum the customer saw on the calculator.
+
+![The business email for a small repair: Travel zone Further out, Job length About 2 hrs, Estimate £215 + parts with £85 first hour, £80 extra time, £50 travel, parts at cost; personal details hidden](documentation/apps-script/calculator-business-email.webp)
+
+**The customer's copy** repeats the estimate they worked out and says it'll be confirmed. The appointment line stays here, for the customer only.
+
+![The customer email: "Here's the estimate you worked out on our calculator" followed by the travel zone, job length and estimate; the name is hidden](documentation/apps-script/calculator-customer-email.webp)
+
+**The PDF** attached to both emails has the same three rows and no appointment line. The photo is a screenshot of the thank-you page, with the browser's address and bookmark bars blurred.
+
+<img src="documentation/apps-script/calculator-pdf.webp" alt="The PDF summary with the three estimate rows and one photo, personal details hidden" width="600">
+
+**The Sheet** fills the Area, Time and Estimate columns for calculator enquiries (rows 7 to 10) and leaves them empty for enquiries that didn't use it. The Phone column shows the bug fixed on 21 November: rows 3 to 9 lost the + from +44 because Sheets read the number as a number, and row 10, sent after the fix, kept it. Rows 2 and 4 are the editor tests with made-up details.
+
+![The Enquiries sheet with ten rows; personal details are hidden, the phone labels show the + lost in rows 3 to 9 and kept in row 10, and rows 7 to 10 show further out, 2 hrs and 215](documentation/apps-script/calculator-sheet.webp)
 
 #### A real enquiry from the live site
 
@@ -550,7 +575,7 @@ Full results are in [TESTING.md](TESTING.md). In summary:
 - **Lighthouse:** Accessibility 96 to 100, and Best Practices and SEO 100 on every page.
 - **Responsive:** no sideways scrolling on any page at 390px, 820px or 1440px.
 - **JavaScript:** all 12 calculator combinations give the right total, and the counter, tabs, map button and form were tested by hand and with automated browser tests.
-- **Apps Script:** 51 automated tests pass against stand-in Google services, and a real enquiry from the live site delivered both emails, the PDF with photos, and a Drive folder.
+- **Apps Script:** 55 automated tests pass against stand-in Google services, and a real enquiry from the live site delivered both emails, the PDF with photos, and a Drive folder.
 - **JavaScript style:** JSHint reports no warnings.
 - **Uploads:** the six-file and 20MB limits, photo shrinking, video stills and the message for a photo the browser can't open were all tested with a stand-in for Google.
 
@@ -575,6 +600,7 @@ The site is deployed with GitHub Pages from the `main` branch.
 4. Run `testEnquiry` once from the editor to grant permissions and check both emails arrive.
 5. **Deploy**, then **New deployment**, type **Web app**, execute as **Me**, access **Anyone**.
 6. Copy the web app URL into `ENQUIRY_URL` in `assets/js/main.js`.
+7. **After any change to the script**, save, then go to **Deploy**, **Manage deployments**, pick the existing deployment, click the pencil and choose **New version**. Don't use **New deployment** again: it makes a second web app at a different address, and the site keeps sending to the old one, which still runs the old code. To check which version the site is using, change `VERSION` at the top of the script before deploying, then open the web app URL in a browser. It shows "Version:" followed by that label.
 
 ### Fork the repository
 
