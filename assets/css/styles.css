@@ -118,6 +118,33 @@ button:focus-visible {
   outline-offset: 3px;
 }
 
+/* Skip link: the first Tab stop on every page. It waits above the top of the
+   screen and slides down over the header when it has keyboard focus */
+.skip-link {
+  position: absolute; /* floats over the header without pushing it down */
+  top: 12px;
+  left: 12px;
+  z-index: 1100; /* above every Bootstrap layer (toasts are the highest, at 1090) */
+  transform: translateY(-200%); /* off screen, but still reachable with Tab */
+  background-color: var(--marigold);
+  color: var(--plum);
+  border: 2px solid var(--plum);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-weight: 700;
+  text-decoration: none; /* looks like a button, not an underlined link */
+}
+
+.skip-link:focus {
+  transform: none; /* back into view */
+}
+
+/* Cream, because the usual violet outline would vanish against the plum header */
+.skip-link:focus-visible {
+  outline: 3px solid var(--cream);
+  outline-offset: 3px;
+}
+
 /* ##### Header & Footer Styling ############################################# */
 
 /* Header Styling */

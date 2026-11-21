@@ -72,12 +72,14 @@ Each page was scanned with axe-core 4.14 against WCAG 2.0 and 2.1 A and AA plus 
 
 | Page | Violations at 1440px | Violations at 390px | Rules passed |
 |---|---|---|---|
-| Home | 0 | 0 | 35 |
-| Bathrooms and Work | 0 | 0 | 39 |
-| Prices and Areas | 0 | 0 | 48 |
-| Contact us | 0 | 0 | 42 |
-| Thank you | 0 | 0 | 30 to 32 |
-| Privacy | 0 | 0 | 31 to 33 |
+| Home | 0 | 0 | 36 |
+| Bathrooms and Work | 0 | 0 | 40 |
+| Prices and Areas | 0 | 0 | 49 |
+| Contact us | 0 | 0 | 39 |
+| Thank you | 0 | 0 | 31 to 33 |
+| Privacy | 0 | 0 | 32 to 34 |
+
+Last run on 21 November 2026, after the skip link and the calculator estimate box were added. Contact us shows fewer rules passed than the first run because the upload field changed from a visible file box to a hidden one with a label.
 
 axe also lists items it can't decide on its own:
 
@@ -85,16 +87,18 @@ axe also lists items it can't decide on its own:
 
 ### Keyboard
 
-Every page was tabbed through from top to bottom with the keyboard at 1280px and 390px. Every tab stop showed a visible focus outline.
+Every page was tabbed through from top to bottom with the keyboard at 1280px and 390px. Every tab stop showed a visible focus outline. The first stop on every page is the skip link.
 
 | Page | Tab stops at 1280px | Tab stops at 390px | Stops with no visible focus |
 |---|---|---|---|
-| Home | 27 | 25 | 0 |
-| Bathrooms and Work | 37 | 35 | 0 |
-| Prices and Areas | 20 | 18 | 0 |
-| Contact us | 19 | 17 | 0 |
-| Thank you | 12 | 10 | 0 |
-| Privacy | 13 | 11 | 0 |
+| Home | 28 | 26 | 0 |
+| Bathrooms and Work | 38 | 36 | 0 |
+| Prices and Areas | 21 | 19 | 0 |
+| Contact us | 20 | 18 | 0 |
+| Thank you | 13 | 11 | 0 |
+| Privacy | 14 | 12 | 0 |
+
+**Skip link.** Tested in Chromium on all six pages at 1280px and 390px (36 checks, all pass): the link is off screen before any key is pressed, the first Tab brings it into view on top of the header with a cream outline, and Enter then Tab lands on the first link or button inside `<main>`.
 
 On phones there are two fewer stops because the three page links sit inside the closed burger menu. The calculator's area and time choices are radio groups, so each group is one tab stop and the arrow keys move between options.
 
@@ -348,4 +352,3 @@ Screenshots are in the README under [What the emails look like](README.md#what-t
 |---|---|---|
 | The customer's email can land in Spam | In the live test, Gmail put the customer's copy in Spam, so a customer might think nothing arrived | Add a line to the thank-you page asking people to check their spam folder. Each "Not spam" helps Gmail learn |
 | Carousel dots are small | Harder to tap on a phone. Lighthouse Accessibility 96 on Bathrooms and Work | Make the dot buttons at least 24px with spacing |
-| No "skip to content" link | Keyboard users tab through the navbar on every page | Add a visually hidden skip link as the first item in `<body>` |

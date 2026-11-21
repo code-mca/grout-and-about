@@ -513,6 +513,7 @@ bootstrap.Collapse.getOrCreateInstance(priceMap, { toggle: false }).show();
 
 ## Accessibility
 
+- A "Skip to main content" link is the first Tab stop on every page. It waits above the top of the screen (`transform: translateY(-200%)`, so it can still take focus, unlike `display: none`) and slides down over the header when focused, with a cream outline that shows against the plum. Enter jumps to `<main id="main">`, past the logo and menu.
 - Semantic landmarks on every page (`header`, `nav`, `main`, `section`, `footer`), one `h1` per page and headings in order.
 - `lang="en"` on every page.
 - Every image has an `alt` attribute. The 17 project and headshot photos have descriptions, and decorative icons have an empty `alt` and `aria-hidden="true"`.
@@ -520,7 +521,7 @@ bootstrap.Collapse.getOrCreateInstance(priceMap, { toggle: false }).show();
 - Every form field has a visible label. Email and phone use the `email` and `tel` input types, and name, email, phone and postcode have `autocomplete` values.
 - The maps are inline SVGs with `role="img"` and a `<title>`, and the zone cards next to them give the same information as text.
 - Each carousel is a labelled region (`role="region"` and `aria-roledescription="carousel"`), and every carousel dot has a label saying which photo it shows.
-- Visible focus outlines: violet on light backgrounds and marigold in the plum header and footer.
+- Visible focus outlines: violet on light backgrounds, marigold in the plum header and footer, and cream on the skip link.
 - The floating icons and button lifts switch off for anyone who has turned on reduced motion (`prefers-reduced-motion`).
 - The video is muted and has controls.
 - Colour contrast meets WCAG AA for every text pairing used (see [Colour palette](#colour-palette)).
