@@ -169,6 +169,47 @@ if (enquiryForm) {
   // Every photo and video added so far, each with its comment and preview
   const media = [];
 
+  // The fields that must be filled in: each has its messages in data-missing and data-wrong
+  const fields = [...enquiryForm.querySelectorAll("[data-missing]")];
+  let showingCount = false; // true while the line under Send is the "fields need fixing" count
+
+  // Checks one field, and shows or clears the message under it. Returns true if it's fine.
+  const checkField = (field) => {
+    let problem = "";
+    if (!field.value.trim()) problem = field.dataset.missing;
+    else if (!field.validity.valid) problem = field.dataset.wrong;
+
+    document.querySelector(`#${field.id}-error`).textContent = problem;
+    if (problem) field.setAttribute("aria-invalid", "true");
+    else field.removeAttribute("aria-invalid");
+    return !problem;
+  };
+
+  // The line under Send: how many fields still need fixing
+  const showCount = () => {
+    const wrong = fields.filter((field) => field.hasAttribute("aria-invalid")).length;
+    let words = "";
+    if (wrong === 1) words = "1 field needs fixing before this can send.";
+    else if (wrong > 1) words = `${wrong} fields need fixing before this can send.`;
+    formStatus.textContent = words;
+    showingCount = wrong > 0;
+  };
+
+  fields.forEach((field) => {
+    // Leaving a field they've typed in: check it straight away
+    field.addEventListener("change", () => {
+      if (field.value.trim() || field.hasAttribute("aria-invalid")) checkField(field);
+      if (showingCount) showCount();
+    });
+    // Typing in a field already marked: clear the message as soon as it's right
+    field.addEventListener("input", () => {
+      if (field.hasAttribute("aria-invalid") && field.validity.valid && field.value.trim()) {
+        checkField(field);
+        if (showingCount) showCount();
+      }
+    });
+  });
+
   // Shows what went wrong and lets them try again
   const showProblem = (message) => {
     formStatus.textContent = message;
@@ -267,9 +308,19 @@ if (enquiryForm) {
     showMedia();
   });
 
-  // The submit event only fires once every field passes the browser's checks
+  // novalidate on the form means submit always fires, so check every field first
   enquiryForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+
+    const results = fields.map(checkField); // every field, so all the messages show at once
+    if (results.includes(false)) {
+      showCount();
+      const first = fields.find((field) => field.hasAttribute("aria-invalid"));
+      first.focus({ preventScroll: true });
+      first.scrollIntoView({ block: "center" }); // so its label shows above it too
+      return;
+    }
+
     sendButton.disabled = true; // stops a second press sending it twice
     sendButton.textContent = "Sending…";
     formStatus.textContent = "";

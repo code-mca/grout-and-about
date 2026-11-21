@@ -216,7 +216,7 @@ Every combination of area and job length was clicked through and the total check
 | Check the map, map open | Click it again | Pass. Scrolls straight back to the map |
 | See bathroom projects | Click it from the repairs tab | Pass. Bathroom projects tab opens |
 | See repair prices | Click it from the bathroom projects tab | Pass. Repairs tab opens |
-| Form, empty | Press Send enquiry with nothing filled in | Pass. Name is flagged first and nothing is sent |
+| Form, empty | Press Send enquiry with nothing filled in | Pass. All six fields show their message, the line under the button says "6 fields need fixing before this can send.", Name gets focus and nothing is sent |
 | Form, sending | Fill in every field correctly and send (with Apps Script not yet set up) | Pass for the error path. Button shows "Sending…", then "Sorry, that didn't send. Please try again in a few minutes." and the button comes back |
 
 ### Photo and video uploads
@@ -252,12 +252,28 @@ After adding the uploads, the Contact us page still has no HTML errors or warnin
 | `e84da` | Yes | Yes, the script turns it into capitals |
 | `N1C 4AG` | Yes | Yes |
 | `SW1A 1AA` | Yes | Yes |
-| `E8` | No | Yes |
+| `E8` | No, with "Please enter your full postcode, both parts, like E8 4DA." | Yes |
 | `E8 4D` | No | Yes |
 | `12345` | No | Yes |
 | `sam@example.com` | Yes | Yes |
 | `sam.example.com` | No | Yes |
-| `sam@example` | Yes | The browser allows an address with no dot after the @. The Apps Script check rejects it |
+| `sam@example` | No | Yes. Until 21 November the page let this through and only the Apps Script refused it. The email field now has the same rule as the script |
+
+### Field messages
+
+Tested in Chromium with Playwright, against a stand-in for the Apps Script. 29 checks, all pass. After the change, `contact.html` has no HTML errors or warnings, JSHint has no warnings, and axe-core found no violations with messages showing at 390px.
+
+| Test | Result |
+|---|---|
+| Press Send with nothing filled in | Pass. Six messages, the count under the button, focus on Name, nothing sent |
+| Postcode `E8`, everything else right | Pass. Only Postcode is marked, with "Please enter your full postcode, both parts, like E8 4DA.", a red border, `aria-invalid="true"`, focus, and "1 field needs fixing before this can send." |
+| Type the rest of the postcode | Pass. The message, red border and count go as soon as it reads `E8 4DA` |
+| Refused, each with its own message: emails `sam@example`, `sam.example.com` and `sam @example.com`; phones `abc`, `0770` and `07700 900123x`; postcodes `E8 4D` and `12345`; a name or description of only spaces; no job type chosen | Pass (11 checks) |
+| Accepted: phones `+44 (0)20 7946 0000` and `020-7946-0000`; postcodes `e84da` and `N1C 4AG`; email `first.last@sub.example.co.uk` | Pass (5 checks) |
+| Type `sam@example` in Email and press Tab | Pass. The message shows straight away, before Send |
+| Tab through an empty field without typing | Pass. No message until Send is pressed |
+| Send with every field right | Pass. Sent, then the thank-you page |
+| JavaScript errors | Pass. None |
 
 ---
 
@@ -278,7 +294,7 @@ Still to do: send a real enquiry from the live site through the calculator once 
 
 ## Apps Script testing
 
-The Apps Script code was run in Node.js with stand-in versions of Google's services (Sheets, Drive, Mail, UrlFetch and the PDF conversion), so its logic could be tested before it's set up in a Google account. All 50 tests pass.
+The Apps Script code was run in Node.js with stand-in versions of Google's services (Sheets, Drive, Mail, UrlFetch and the PDF conversion), so its logic could be tested before it's set up in a Google account. All 51 tests pass.
 
 | Area | What was tested |
 |---|---|
@@ -289,6 +305,7 @@ The Apps Script code was run in Node.js with stand-in versions of Google's servi
 | Uploads (14 tests) | Photos and videos saved, other file types and tampered data skipped, comments trimmed, cut to 100 characters, escaped and saved as file descriptions, Drive link in John's email, photos embedded in the PDF, a video's still frame used instead of the video, a video with no still says so, no photos section when none were sent, 7 files refused, 26MB refused |
 | Editor test (1 test) | `testEnquiry` sends both emails |
 | Calculator estimate (11 tests) | For three area and time pairs (£155, £85 and £295), the travel zone, job length, estimate and its breakdown appear in both emails and the PDF, and the Area, Time and Estimate columns are filled. With no estimate, both emails and the PDF say so. Edited values, including built-in object names like `toString` and `__proto__`, give no estimate but the enquiry still goes through, and `__proto__` as a job type is refused |
+| Appointment line (1 test) | "An enquiry isn't a confirmed appointment" is in the customer's email only, not in the business email or the PDF |
 | Greeting (8 tests) | "Sam Jones" is greeted as Sam, "Mr J Smith" as Mr Smith, "Dr. Ana Lee" as Dr Lee, "J Smith" as J Smith, and a one-word name as itself |
 
 ### Real test in Google
@@ -342,6 +359,7 @@ Screenshots are in the README under [What the emails look like](README.md#what-t
 | Six JSHint style warnings | Functions declared inside `if` blocks, and ternaries split over lines | Arrow functions, and short one-line labels |
 | Short alt text on the first project's photos ("Bathroom1 mid work") | Placeholder text never replaced | Each photo now describes what it shows. The headshot, soldering photo and video labels were improved too |
 | The first project's dots said "project 2" and "project 3" | The project is one house with two bathrooms and a WC | Labels now say "Show bathroom 1 in progress", "Show the finished WC" and so on |
+| Entering `E8` as the postcode gave no reason why it wouldn't send (live test, 21 November) | The form relied on the browser's own pop-up, which shows briefly, for one field at a time, in the browser's wording, and in this test didn't show at all | Each field now has its own message underneath, saying what's wrong and giving an example. See [Field messages](#field-messages) |
 | Calculator estimate didn't reach the form (live test, 21 November) | Send an enquiry on the calculator was a plain link to `contact.html`, so the area and time weren't passed on | The link now carries the area and time, the form shows the estimate and sends both, and the emails and PDF show the travel zone, job length and price breakdown. 23 browser checks and 8 new script tests |
 | Built-in names got past the checks | `areas[area]` is also true for names every object has, like `toString` or `__proto__`, so an edited address showed a broken estimate, and a crafted request with `__proto__` as the job type passed the script's check | `main.js` and the script now check the value is one of their own keys with `Object.keys(list).includes(key)`. 3 new tests |
 | Customer email greeted a live tester as "Hi Mr," | The script used the first word of the name, which was a title | A new `greetingName_` function skips titles ("Mr J Smith" becomes "Mr Smith") and keeps the full name when the first word is an initial. 8 new tests |
