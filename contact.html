@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact us | Grout &amp; About</title>
-    <meta name="description" content="Send Grout &amp; About an enquiry about a repair, radiator or bathroom job in Hackney. We'll come back with a time and a clear price.">
+    <meta name="description"
+        content="Send Grout &amp; About an enquiry about a repair, radiator or bathroom job in Hackney. We'll come back with a time and a clear price.">
 
     <!-- Favicon -->
     <link rel="icon" href="assets/images/favicon/favicon-32.png" sizes="32x32" type="image/png">
@@ -162,6 +163,13 @@
                     <h2 id="enquiry-title">
                         Send an enquiry
                     </h2>
+                    <!-- Shown only when they arrive from the calculator on Prices & Areas -->
+                    <p class="estimate-carry" id="estimate-carry" hidden>
+                        Your calculator estimate: <strong id="carry-total"></strong> + parts
+                        (<span id="carry-detail"></span>). We'll confirm it when we reply.
+                    </p>
+                    <input type="hidden" id="area" name="area">
+                    <input type="hidden" id="minutes" name="minutes">
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="name" class="form-label">Name</label>
@@ -206,9 +214,9 @@
                         <div class="col-12">
                             <p class="form-label" id="files-title">Photos or videos <span
                                     class="label-optional">(optional)</span></p>
-                            <p id="files-help" class="form-text media-help">The problem, or a bathroom you love. Add up
-                                to 6, one at a time or several at once, with videos up to 20MB in total. Add a line
-                                about each one.</p>
+                            <p id="files-help" class="form-text media-help">The problem, or some bathroom inspo. Add up
+                                to 6 photos, max 20MB. Might take some time to send, depending on the photo number, just
+                                press send once!</p>
                             <!-- main.js adds a row here for each file added, using the template below -->
                             <ul class="list-unstyled media-list" id="media-list"></ul>
                             <!-- The real file box is hidden; the pill-shaped label below opens it -->

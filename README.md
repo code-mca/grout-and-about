@@ -2,7 +2,7 @@
 
 Grout & About is a website for a one-person plumbing and bathroom business in Hackney, London. It shows what the business does, what a repair visit costs, which areas it covers and photos of real bathroom projects. There is one way to get in touch: an enquiry form.
 
-The site was built by the owner for the WAES Full Stack course, using HTML, CSS, Bootstrap 5.3 and JavaScript. The enquiry form is being connected to Google Apps Script so that every enquiry is logged in a Google Sheet and emailed as a PDF to both John and the customer (see [the current status](#google-apps-script)).
+The site was built by the owner of Grout & About for the WAES Full Stack course, using HTML, CSS, Bootstrap 5.3 and JavaScript. The enquiry form sends each enquiry, with any photos or videos, to Google Apps Script, which logs it in a Google Sheet, saves the files to Google Drive and emails a PDF summary to both the owner and the customer (see [Google Apps Script](#google-apps-script)).
 
 **[View the live site](https://code-mca.github.io/grout-and-about/)**
 
@@ -76,7 +76,7 @@ Each story is a GitHub issue with acceptance criteria and tasks. The priority us
 | [1](https://github.com/code-mca/grout-and-about/issues/1) | As a **first-time visitor**, I want easy navigation and a layout that works on my phone or computer, so I can find what I need quickly, even without any plumbing knowledge. | Must     | Shared navbar and footer on every page, burger menu below 992px, Bootstrap grid. No sideways scrolling at 390px, 820px, 1280px or 1440px ([tested](TESTING.md#responsiveness)). |
 | [2](https://github.com/code-mca/grout-and-about/issues/2) | As a **local homeowner**, I want to see straight away what services are offered, so I can tell whether Grout & About can help with my job.                                   | Must     | Home page hero and the two service panels, each card with a "What's included" drop-down.                                                                                        |
 | [3](https://github.com/code-mca/grout-and-about/issues/3) | As a **budget-conscious homeowner**, I want to understand how charges work before I get in touch, so I can avoid surprises and decide whether the job is worth doing.        | Must     | Prices and Areas: price cards, the repair visit calculator, "How we charge, in full" and the six-step bathroom quote process.                                                   |
-| [4](https://github.com/code-mca/grout-and-about/issues/4) | As a **customer with a plumbing problem**, I want to send an enquiry describing my job, so I can get a reply without having to phone.                                        | Must     | Contact us form with browser checks, then the thank-you page. The Apps Script that sends it is set up and tested ([status](#google-apps-script)).                               |
+| [4](https://github.com/code-mca/grout-and-about/issues/4) | As a **customer with a plumbing problem**, I want to send an enquiry describing my job, so I can get a reply without having to phone.                                        | Must     | Contact us form with browser checks, then the thank-you page. Each enquiry is logged and emailed to both sides by Google Apps Script, tested live on 20 November 2026. |
 | [5](https://github.com/code-mca/grout-and-about/issues/5) | As a **visitor with a visual impairment**, I want the site to be built in an accessible way, so I can find information and send an enquiry without barriers.                 | Must     | See [Accessibility](#accessibility). axe-core found no violations on any page.                                                                                                  |
 | [6](https://github.com/code-mca/grout-and-about/issues/6) | As a **homeowner planning a new bathroom**, I want to see genuine examples of past work, so I can judge the quality before asking for a quote.                               | Should   | Bathrooms and Work: "Recent work", three projects with five photos each.                                                                                                        |
 | [7](https://github.com/code-mca/grout-and-about/issues/7) | As a **local resident**, I want to check whether my area is covered, so I know before I make an enquiry.                                                                     | Should   | Prices and Areas: three travel zones and a ward-by-ward map.                                                                                                                    |
@@ -193,7 +193,7 @@ The hero holds two large tab buttons: **Repairs and small jobs** and **Bathroom 
 **Repairs and small jobs**
 
 - Three price cards: £85 for the first hour then £40 for each half hour, parts at cost, travel free if you're local.
-- **Work out a repair visit.** Pick your area and roughly how long the job will take, and the estimate updates straight away. Check the map opens the map and scrolls to it.
+- **Work out a repair visit.** Pick your area and roughly how long the job will take, and the estimate updates straight away. Check the map opens the map and scrolls to it. Send an enquiry takes the area and time over to the form ([how it works](#calculator-estimate-on-the-form)).
 - **How we charge, in full.** A drop-down with every rule in one list, including that VAT is included.
 - **Getting around London is pants.** The three travel zones (no fee, £30, £50) and a See the price map button that opens a ward-by-ward map.
 
@@ -214,13 +214,14 @@ The hero holds two large tab buttons: **Repairs and small jobs** and **Bathroom 
 - The form asks for name, email, phone, postcode, job type and job description. Every field has a visible label and is required.
 - The browser checks the email format and the postcode against a UK postcode pattern before anything is sent. The first problem field gets focus with a message.
 - `autocomplete` values let phones fill in name, email, phone and postcode.
-- **Photos or videos (optional).** Visitors can add up to six files. Each one gets a row with a small preview and a box for a one-line comment, so John knows what he's looking at. Too many files, or videos over 20MB in total, are flagged straight away ([how it works](#photo-and-video-uploads)).
+- **Photos or videos (optional).** An "Add a photo or video" button adds files one at a time or several at once, up to six. Each file gets its own row with a small preview, a Remove button and a box for a one-line comment, so John knows what he's looking at. Anything over the limits isn't added, and a message says why ([how it works](#photo-and-video-uploads)).
+- **The calculator estimate.** Coming from Send an enquiry on the calculator, a mint box above the form says, for example, "Your calculator estimate: £155 + parts (up to 20 mins away, about 1½ hrs of work). We'll confirm it when we reply." The area and time go with the enquiry, and both emails and the PDF show the travel zone, job length and estimate.
 - A line under the button explains how the details are used, with a link to the privacy page.
 - On a successful send the visitor goes to the thank-you page. If something goes wrong a message appears under the form and the button comes back so they can try again.
 
 ![The enquiry form with the browser flagging an empty phone field](documentation/features/contact-form.webp)
 
-![The form with two photos and two videos picked, each with a preview and a comment box](documentation/features/uploads.webp)
+![The form with two photos and a video added, each with a preview, a Remove button and a comment box, and a message saying a large video wasn't added](documentation/features/uploads.webp)
 
 ### Thank you page
 
@@ -236,13 +237,13 @@ Because the form collects personal details, the site has a privacy page. Article
 
 ### Future features
 
-- **Carry the calculator estimate into the form** so John sees which area and job length the visitor picked.
+- **Check the travel zone against the postcode.** The script already looks up the ward from the postcode, so it could flag an enquiry where someone picked "Local" but lives further out, before a price is agreed.
 
 ---
 
 ## JavaScript and Google Apps Script
 
-All the site's own JavaScript is in one file, `assets/js/main.js` (300 lines). Each block checks that its page's elements exist before doing anything, so the same file can load on every page.
+All the site's own JavaScript is in one file, `assets/js/main.js` (383 lines). Each block checks that its page's elements exist before doing anything, so the same file can load on every page.
 
 ### Why the form needs JavaScript
 
@@ -293,14 +294,15 @@ enquiryForm.addEventListener("submit", async (event) => {
 | Slide counter           | Bathrooms and Work | Listens for Bootstrap's `slide.bs.carousel` event and writes "2 of 5" using `event.to`, the number of the slide that's coming in.                                                                                                                              |
 | Carousel preloader      | Bathrooms and Work | An `IntersectionObserver` notices when a carousel is within 300px of the screen, switches its photos from `loading="lazy"` to `eager` and calls `img.decode()`, so every slide is ready before it's shown. See [Challenges](#3-white-blocks-in-the-carousels). |
 | Repair visit calculator | Prices and Areas   | Reads the checked area and time on every `change` event. Total = £85 + £40 for each half hour after the first hour + travel (£0, £30 or £50). Updates the line items and the total.                                                                            |
+| Estimate on the form    | Prices and Areas, Contact us | The calculator adds the picked area and time to its Send an enquiry link, like `contact.html?area=near&minutes=90`. The Contact us page reads them with `URLSearchParams`, shows the estimate and puts both values in hidden fields. See [Calculator estimate on the form](#calculator-estimate-on-the-form). |
 | Check the map           | Prices and Areas   | Opens the map with Bootstrap's Collapse API, waits for the `shown.bs.collapse` event, then scrolls the map into view. If the map is already open it scrolls straight away.                                                                                     |
 | Tab shortcuts           | Prices and Areas   | Buttons with a `data-show-tab` attribute (See bathroom projects, See repair prices) switch tabs with `bootstrap.Tab.getOrCreateInstance(tab).show()` and scroll back up to the tabs.                                                                           |
-| Photo and video list    | Contact us         | When files are picked, checks there are no more than six and that videos come to 20MB or less with `setCustomValidity`, then builds one row per file from a `<template>`, with a preview made by `URL.createObjectURL`. |
+| Photo and video list    | Contact us         | Keeps every file added in an array, so each pick adds to the list instead of replacing it. Skips anything over six files or 20MB of video, then redraws one row per file from a `<template>`, with a preview from `URL.createObjectURL`, a Remove button and the comment typed so far. |
 | Sending the enquiry     | Contact us         | The `async` submit handler above. It disables the button while sending, adds any photos and videos, shows a message from the server if a field is wrong, and catches network failures. |
 
 ### Google Apps Script
 
-> **Status on 20 November 2026.** The Apps Script is set up in the business Google account and deployed as a web app, and its address is in `ENQUIRY_URL` in `main.js`. It passes 31 automated tests, and a real test run from the Apps Script editor delivered both emails with the PDF attached (see [What the emails look like](#what-the-emails-look-like)). The next check is a real enquiry sent from the live site.
+> **Status on 20 November 2026: live.** The Apps Script is deployed as a web app in the business Google account, and its address is in `ENQUIRY_URL` in `main.js`. It passes 50 automated tests, and a real enquiry sent from the live site with two photos arrived as expected: both emails, the PDF with the photos and their comments, and a Drive folder (see [A real enquiry from the live site](#a-real-enquiry-from-the-live-site)).
 
 Apps Script was chosen because it's free with a Google account, needs no server, and can write to Google Sheets, save to Google Drive and send email from the business's Gmail address.
 
@@ -337,7 +339,21 @@ The settings the script needs (the business email address, the Sheet's ID and th
 
 #### What the emails look like
 
-These are from the first real test on 20 November 2026, run from the Apps Script editor.
+#### A real enquiry from the live site
+
+Sent from the live site on 20 November 2026 with two photos, each with a comment. The sender's name, email, phone, postcode and ward are hidden in these screenshots for privacy.
+
+**John's copy.** The job and area come first, and "2 in Drive" links to the enquiry's own folder. The estimate line says "They didn't use the calculator" because the form didn't carry the calculator estimate over yet. That was added on 21 November ([Calculator estimate on the form](#calculator-estimate-on-the-form)).
+
+![The business email from the live enquiry, with personal details hidden and a link to two files in Drive](documentation/apps-script/live-business-email.webp)
+
+**The PDF** attached to both emails, with each photo and its comment underneath:
+
+<img src="documentation/apps-script/live-pdf.webp" alt="The PDF from the live enquiry, with personal details hidden, showing the photos section with Photo 1 and its comment" width="600">
+
+#### From the first test in the Apps Script editor
+
+These are from the first real test on 20 November 2026, run from the Apps Script editor with test details.
 
 **John's copy.** The job and area come first, because that's what he needs to plan the visit. The ward came from the postcode lookup. Pressing Reply answers the customer, because the email's Reply-To is set to their address.
 
@@ -351,13 +367,27 @@ These are from the first real test on 20 November 2026, run from the Apps Script
 
 <img src="documentation/apps-script/pdf.webp" alt="The PDF summary with the reference, contact details, job, description and estimate" width="600">
 
-The test function sends a calculator estimate, so it shows in all three. Enquiries from the form don't pass the estimate yet, so until that's added ([Future features](#future-features)) John's email will say "They didn't use the calculator" and the customer's email leaves that line out.
+The test function sends a calculator estimate, so it shows in all three. These screenshots show the first layout, with the estimate on one line. Since 21 November it's three rows: travel zone, job length, and the estimate with each part of it (£85 first hour, £40 extra time, £30 travel, parts at cost), the same lines the customer saw on the calculator.
+
+### Calculator estimate on the form
+
+In the first live test from the calculator, the emails said "They didn't use the calculator", because Send an enquiry was a plain link to `contact.html`. Now the area and time picked travel with the link:
+
+1. **On Prices and Areas,** every time an area or time is picked, `updateEstimate()` also rewrites the link, for example to `contact.html?area=far&minutes=180`. The part after `?` is a query string: extra information on the end of an address that the next page can read. Nothing is sent anywhere.
+2. **On Contact us,** `new URLSearchParams(window.location.search)` reads `area` and `minutes`. If both are values the calculator could have sent, the page works out the same total, shows it in the mint box and puts both values in hidden `<input type="hidden">` fields, which go with the form like any other field.
+3. **In the script,** `workOutEstimate_` works the price out again with its own copy of the rates. The page only ever shows the estimate. Anyone can edit an address, so a price sent from the page is never trusted.
+
+Only the area and time are sent, not the price, because those are what the owner needs to plan the visit, and the price follows from them.
+
+**Checking the values.** The first version checked `areas[area]`. That is also true for names every JavaScript object has, like `toString` or `__proto__`, so an edited address such as `?area=toString&minutes=constructor` showed a broken estimate. Both `main.js` and the script now check the value is one of the keys they wrote: `Object.keys(areas).includes(area)`. The same fix stops `__proto__` getting past the job type check in the script.
 
 ### Photo and video uploads
 
 A photo of a leak or a tired bathroom tells John far more than a description, so the form takes up to six photos or videos, each with a one-line comment (up to 100 characters).
 
-- **Checked as soon as they're picked.** More than six files, or videos over 20MB in total, set a custom message on the file box with `setCustomValidity`. The browser then refuses to submit until it's fixed, the same as a required field.
+- **Added one at a time, or several at once.** A file box normally replaces its files each time you pick, so the script keeps its own list. Each pick is added to the list, the box is emptied (so the same file can be added again), and the rows are redrawn. Comments typed so far are kept, and Remove takes a file back out.
+- **Checked as they're added.** A seventh file, or a video that would take the total over 20MB, isn't added, and a message under the button says why. At six files the button turns off and reads "6 files added".
+- **Keyboard friendly.** The real file box is hidden with Bootstrap's `visually-hidden` class but can still be reached with Tab. Its pill-shaped label shows the focus outline (`.media-input:focus-visible + .add-media`). After a Remove, focus moves back to the Add button, so keyboard users aren't left on a button that no longer exists.
 - **Photos are shrunk in the browser** before sending: drawn onto a canvas no more than 1600px on the longest side and saved as a JPEG at 75% quality. A white background is painted first, so transparent PNGs don't turn black. In testing, a 1MB photo went out as 148KB.
 - **Videos can't play in a PDF,** so the browser takes a still frame from one second in (or halfway through a very short clip) for the PDF. The video itself is sent as it is and saved to Drive.
 - **A photo the browser can't open** (for example an iPhone HEIC photo in Chrome) stops the send with a message asking for a JPEG or PNG, instead of failing silently.
@@ -507,7 +537,7 @@ Full results are in [TESTING.md](TESTING.md). In summary:
 - **Lighthouse:** Accessibility 96 to 100, and Best Practices and SEO 100 on every page.
 - **Responsive:** no sideways scrolling on any page at 390px, 820px or 1440px.
 - **JavaScript:** all 12 calculator combinations give the right total, and the counter, tabs, map button and form were tested by hand and with automated browser tests.
-- **Apps Script:** 31 automated tests pass against stand-in Google services, and a real test in Google delivered both emails and the PDF.
+- **Apps Script:** 50 automated tests pass against stand-in Google services, and a real enquiry from the live site delivered both emails, the PDF with photos, and a Drive folder.
 - **JavaScript style:** JSHint reports no warnings.
 - **Uploads:** the six-file and 20MB limits, photo shrinking, video stills and the message for a photo the browser can't open were all tested with a stand-in for Google.
 
@@ -586,7 +616,7 @@ Then open `http://localhost:8000`. Use a local server rather than opening the fi
 
 ### Content
 
-- All text was written for Grout & About by the owner.
+- All text was written by the owner of Grout & About.
 - The privacy page follows the information list in [Article 13 of the UK GDPR](https://www.legislation.gov.uk/eur/2016/679/article/13).
 
 ### Media

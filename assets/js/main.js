@@ -63,6 +63,13 @@ if (calc) {
     calc.querySelector("#travel-label").textContent = `(${zoneNames[travel]})`;
     calc.querySelector("#travel-price").textContent = travelPrice;
     calc.querySelector("#total-price").textContent = `£${85 + extra + travel}`;
+
+    // Put what they picked on the end of the Send an enquiry link, so the form can show it
+    const area = calc
+      .querySelector('input[name="zone"]:checked')
+      .id.replace("zone-", ""); // zone-near becomes near
+    calc.querySelector("#estimate-enquiry").href =
+      `contact.html?area=${area}&minutes=${minutes}`;
   };
 
   calc.addEventListener("change", updateEstimate);
@@ -106,6 +113,38 @@ document.querySelectorAll("[data-show-tab]").forEach((button) => {
 });
 
 /**** Contact Us Page ****/
+
+/* The calculator estimate: show it on the form if they came from the Prices page */
+const estimateCarry = document.querySelector("#estimate-carry");
+
+if (estimateCarry) {
+  // The same areas, times and prices as the calculator
+  const areas = {
+    local: { name: "local", travel: 0 },
+    near: { name: "up to 20 mins away", travel: 30 },
+    far: { name: "further out", travel: 50 },
+  };
+  const times = { 60: "1 hr", 90: "1½ hrs", 120: "2 hrs", 180: "3 hrs" };
+
+  // Read ?area=near&minutes=90 from the end of the address
+  const params = new URLSearchParams(window.location.search);
+  const area = params.get("area");
+  const minutes = params.get("minutes");
+
+  // Only show it if both are values the calculator could have sent. Checking the
+  // keys, not areas[area], stops names every object has, like "toString", getting in.
+  if (Object.keys(areas).includes(area) && Object.keys(times).includes(minutes)) {
+    const extra = ((Number(minutes) - 60) / 30) * 40;
+    const total = 85 + extra + areas[area].travel;
+
+    estimateCarry.querySelector("#carry-total").textContent = `£${total}`;
+    estimateCarry.querySelector("#carry-detail").textContent =
+      `${areas[area].name}, about ${times[minutes]} of work`;
+    document.querySelector("#area").value = area;
+    document.querySelector("#minutes").value = minutes;
+    estimateCarry.hidden = false;
+  }
+}
 
 /* Send the enquiry, with any photos and videos, to our Apps Script, which emails it */
 const ENQUIRY_URL =

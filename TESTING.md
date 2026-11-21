@@ -75,7 +75,7 @@ Each page was scanned with axe-core 4.14 against WCAG 2.0 and 2.1 A and AA plus 
 | Home | 0 | 0 | 35 |
 | Bathrooms and Work | 0 | 0 | 39 |
 | Prices and Areas | 0 | 0 | 48 |
-| Contact us | 0 | 0 | 41 |
+| Contact us | 0 | 0 | 42 |
 | Thank you | 0 | 0 | 30 to 32 |
 | Privacy | 0 | 0 | 31 to 33 |
 
@@ -182,7 +182,7 @@ The hero wave uses CSS `mask`, and the frosted card uses `backdrop-filter`, so S
 | 1. Navigation and responsive layout | Open each page from the navbar and the footer at 390px, 820px and 1440px | Every link works, the current page is underlined, the burger menu appears below 992px with Contact us still showing, and there's no sideways scrolling | Pass. 80 links checked, none broken |
 | 2. Hero and service cards | Open each "What's included" drop-down on the home page | Each opens on its own, the one before closes, and the other cards in the row stay the same size | Pass |
 | 3. Clear pricing | Read the price cards and "How we charge, in full", then try the calculator | Rates, travel charges and VAT are stated, and the calculator total matches the rates | Pass. All 12 combinations correct (below) |
-| 4. Enquiry form | Submit the form empty, with bad values, then with good values, with and without photos and videos | Empty and bad fields are flagged before sending. A good enquiry is sent and the visitor sees the thank-you page | Partly. The checks and uploads work against a stand-in for Google, and the Apps Script sends both emails when run from its editor. A real enquiry from the live site is the last check |
+| 4. Enquiry form | Submit the form empty, with bad values, then with good values, with and without photos and videos | Empty and bad fields are flagged before sending. A good enquiry is sent and the visitor sees the thank-you page | Pass. Tested live on 20 November 2026 (see [Real enquiry from the live site](#real-enquiry-from-the-live-site)) |
 | 5. Accessible design | axe-core, keyboard, contrast and image checks above | No violations, every tab stop visible, AA contrast, every image has alt text | Pass |
 | 6. Project examples | Click through each project carousel | Five photos per project, counter updates, captions and labels show | Pass |
 | 7. Service area map | Click Check the map and See the price map | The map opens and the page scrolls to it. The zones match the cards | Pass |
@@ -221,17 +221,21 @@ Tested with Google's address swapped for a stand-in that records what the form s
 
 | Test | Expected | Result |
 |---|---|---|
-| Pick a 1MB JPEG photo, a transparent PNG, a WebM video and an MP4 video | Four rows, numbered and labelled "Photo" or "Video" with the file name. Each label is linked to its own comment box | Pass |
-| Type "  Water under the sink  " as the first comment and send | The comment is sent trimmed, as "Water under the sink" | Pass |
-| The 1MB photo (4032 by 3024 pixels) | Sent as a JPEG of 1600 by 1200, 148KB | Pass |
-| The transparent PNG | Sent as a JPEG with a white background, not black | Pass |
-| Each video | Sent as it is, plus a JPEG still no more than 1600px on its longest side | Pass |
-| Total request with all four files | About 3MB | Pass |
-| Pick seven files | "Please pick up to 6 files." and the form won't send | Pass |
-| Pick a 21MB video | "Your videos come to 21MB. Please keep them under 20MB: shorter clips, or fewer." | Pass |
-| Then pick one photo instead | The message clears and one row shows | Pass |
-| Pick a HEIC photo, which Chrome can't open | "Sorry, we couldn't open phone-photo.heic. Please try a JPEG or PNG photo." Nothing is sent and the button comes back | Pass |
+| Add one photo, then type a comment | One row, "Photo 1: leak-photo.jpg". The button changes to "Add another photo or video" | Pass |
+| Add a video on its own | A second row is added. The first row and its comment stay | Pass |
+| Add a photo and a video at once | Both are added as rows 3 and 4 | Pass |
+| Remove row 2 | The rows renumber (1, 2, 3), the other comments stay, "Video removed." shows and focus returns to the Add button | Pass |
+| Add a 21MB video | Not added. "Not everything was added: big.mp4 would take your videos over 20MB, so try a shorter clip." | Pass |
+| Add 4 files, then 3 more | Only 6 are kept. The button reads "6 files added" and is turned off, with a message saying only 6 can be added | Pass |
+| Remove one of the 6 | The button turns back on | Pass |
+| Add the same file twice in a row | Added both times | Pass |
+| Type "  Water under the sink  " as a comment and send | The comment is sent trimmed, as "Water under the sink" | Pass |
+| Send a 1MB photo (4032 by 3024 pixels) | Sent as a JPEG of 1600 by 1200, 148KB | Pass |
+| Send a transparent PNG | Sent as a JPEG with a white background, not black | Pass |
+| Send a video | Sent as it is, plus a JPEG still no more than 1600px on its longest side | Pass |
+| Send a HEIC photo, which Chrome can't open | "Sorry, we couldn't open phone-photo.heic. Please try a JPEG or PNG photo." Nothing is sent and the button comes back | Pass |
 | Send with no files | `files` is sent as an empty list | Pass |
+| Tab from the job description | Focus lands on the Add button, with a visible outline | Pass |
 | The hidden bot field | Sent empty, and never reached with the Tab key | Pass |
 
 After adding the uploads, the Contact us page still has no HTML errors or warnings, no axe-core violations and no sideways scrolling at 390px. Lighthouse scored 80 (mobile) and 98 (desktop) for Performance and 100 for the other three.
@@ -253,9 +257,24 @@ After adding the uploads, the Contact us page still has no HTML errors or warnin
 
 ---
 
+### Calculator estimate on the form
+
+Tested in Chromium with Playwright, against a stand-in for the Apps Script web app. 23 checks, all pass. After the change, `prices.html` and `contact.html` have no HTML errors or warnings, and JSHint has no warnings for `main.js`.
+
+| Test | Result |
+|---|---|
+| Send an enquiry link when Prices and Areas opens | Pass. `contact.html?area=near&minutes=90`, matching the options picked by default |
+| Pick Further out and 3 hrs, then Local and 1 hr, then Up to 20 mins and 2 hrs, and press Send an enquiry each time (4 checks each) | Pass. The link changes each time, the form shows the same total as the calculator (£295, £85, £195), the area and job length are shown, and the hidden fields are filled |
+| Edited addresses: `area=moon`, area missing, minutes missing, `minutes=75`, `area=__proto__`, `area=toString&minutes=constructor`, and no query string at all | Pass. Nothing shown and the hidden fields stay empty, in all 7 |
+| Send from `?area=far&minutes=180` | Pass. `area` "far" and `minutes` "180" go with the enquiry |
+| Send from plain `contact.html` | Pass. `area` and `minutes` are sent empty |
+| JavaScript errors on the page | Pass. None |
+
+Still to do: send a real enquiry from the live site through the calculator once the updated script is deployed.
+
 ## Apps Script testing
 
-The Apps Script code was run in Node.js with stand-in versions of Google's services (Sheets, Drive, Mail, UrlFetch and the PDF conversion), so its logic could be tested before it's set up in a Google account. All 31 tests pass.
+The Apps Script code was run in Node.js with stand-in versions of Google's services (Sheets, Drive, Mail, UrlFetch and the PDF conversion), so its logic could be tested before it's set up in a Google account. All 50 tests pass.
 
 | Area | What was tested |
 |---|---|
@@ -265,6 +284,8 @@ The Apps Script code was run in Node.js with stand-in versions of Google's servi
 | Outside services (1 test) | If postcodes.io is down, the enquiry still goes through |
 | Uploads (14 tests) | Photos and videos saved, other file types and tampered data skipped, comments trimmed, cut to 100 characters, escaped and saved as file descriptions, Drive link in John's email, photos embedded in the PDF, a video's still frame used instead of the video, a video with no still says so, no photos section when none were sent, 7 files refused, 26MB refused |
 | Editor test (1 test) | `testEnquiry` sends both emails |
+| Calculator estimate (11 tests) | For three area and time pairs (£155, £85 and £295), the travel zone, job length, estimate and its breakdown appear in both emails and the PDF, and the Area, Time and Estimate columns are filled. With no estimate, both emails and the PDF say so. Edited values, including built-in object names like `toString` and `__proto__`, give no estimate but the enquiry still goes through, and `__proto__` as a job type is refused |
+| Greeting (8 tests) | "Sam Jones" is greeted as Sam, "Mr J Smith" as Mr Smith, "Dr. Ana Lee" as Dr Lee, "J Smith" as J Smith, and a one-word name as itself |
 
 ### Real test in Google
 
@@ -278,7 +299,24 @@ On 20 November 2026 at 16:51, `testEnquiry` was run from the Apps Script editor 
 | Customer email arrives, greeted by first name, subject "Thanks, Test: we've got your enquiry" | Pass |
 | PDF summary attached to both emails, with reference GA-1120-1651 | Pass |
 
-Screenshots are in the README under [What the emails look like](README.md#what-the-emails-look-like). Still to do once the web app is deployed: send an enquiry from the live site using a different email address as the customer, and check that pressing Reply on the business email goes to that address.
+### Real enquiry from the live site
+
+On 20 November 2026 at 19:55, an enquiry was sent from the live site with two photos, each with a comment, using a personal email address as the customer.
+
+| Check | Result |
+|---|---|
+| The form sends and goes to the thank-you page | Pass |
+| Business email arrives, subject "New enquiry: Full bathroom installation in" the postcode | Pass |
+| Ward and borough looked up from the postcode | Pass |
+| "2 in Drive" links to a new folder named with the reference and name, holding both files | Pass |
+| PDF shows both photos, each with its comment | Pass |
+| No estimate sent, so the business email says "They didn't use the calculator" | Pass. The form didn't carry the calculator estimate yet (see [fixed bugs](#fixed-bugs)) |
+| Customer email arrives | Pass, but it went to the customer's Spam folder (see [known issues](#known-issues)) |
+| Customer greeted by first name | Fail: the name was typed as "Mr" plus an initial and surname, so the greeting said "Hi Mr," and the subject "Thanks, Mr:". Fixed, see [fixed bugs](#fixed-bugs) |
+
+Screenshots are in the README under [What the emails look like](README.md#what-the-emails-look-like), with the sender's personal details hidden. Still to check: pressing Reply on the business email goes to the customer's address.
+
+<img src="documentation/apps-script/live-customer-email.webp" alt="The customer email from the live test in Gmail's Spam folder, greeting the customer as Hi Mr" width="700">
 
 ---
 
@@ -300,12 +338,14 @@ Screenshots are in the README under [What the emails look like](README.md#what-t
 | Six JSHint style warnings | Functions declared inside `if` blocks, and ternaries split over lines | Arrow functions, and short one-line labels |
 | Short alt text on the first project's photos ("Bathroom1 mid work") | Placeholder text never replaced | Each photo now describes what it shows. The headshot, soldering photo and video labels were improved too |
 | The first project's dots said "project 2" and "project 3" | The project is one house with two bathrooms and a WC | Labels now say "Show bathroom 1 in progress", "Show the finished WC" and so on |
+| Calculator estimate didn't reach the form (live test, 21 November) | Send an enquiry on the calculator was a plain link to `contact.html`, so the area and time weren't passed on | The link now carries the area and time, the form shows the estimate and sends both, and the emails and PDF show the travel zone, job length and price breakdown. 23 browser checks and 8 new script tests |
+| Built-in names got past the checks | `areas[area]` is also true for names every object has, like `toString` or `__proto__`, so an edited address showed a broken estimate, and a crafted request with `__proto__` as the job type passed the script's check | `main.js` and the script now check the value is one of their own keys with `Object.keys(list).includes(key)`. 3 new tests |
+| Customer email greeted a live tester as "Hi Mr," | The script used the first word of the name, which was a title | A new `greetingName_` function skips titles ("Mr J Smith" becomes "Mr Smith") and keeps the full name when the first word is an initial. 8 new tests |
 
 ### Known issues
 
 | Issue | Effect | Suggested fix |
 |---|---|---|
-| Apps Script web app not deployed yet | The form on the live site can't send. Visitors see "Sorry, that didn't send" | Deploy the web app and paste its address into `ENQUIRY_URL` |
+| The customer's email can land in Spam | In the live test, Gmail put the customer's copy in Spam, so a customer might think nothing arrived | Add a line to the thank-you page asking people to check their spam folder. Each "Not spam" helps Gmail learn |
 | Carousel dots are small | Harder to tap on a phone. Lighthouse Accessibility 96 on Bathrooms and Work | Make the dot buttons at least 24px with spacing |
-| Privacy page mentions calculator estimates | The form doesn't pass the calculator estimate yet | Fine once the estimate carry-over is added. Otherwise, remove those words for now |
 | No "skip to content" link | Keyboard users tab through the navbar on every page | Add a visually hidden skip link as the first item in `<body>` |
