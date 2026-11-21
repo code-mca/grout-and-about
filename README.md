@@ -34,11 +34,15 @@ The site was built by the owner of Grout & About for the WAES Full Stack course,
   - [Why the form needs JavaScript](#why-the-form-needs-javascript)
   - [What main.js does](#what-mainjs-does)
   - [Google Apps Script](#google-apps-script)
+  - [Calculator estimate on the form](#calculator-estimate-on-the-form)
   - [Photo and video uploads](#photo-and-video-uploads)
 - [Changed mid-flight, and why](#changed-mid-flight-and-why)
 - [Challenges overcome](#challenges-overcome)
 - [Accessibility](#accessibility)
 - [Testing](#testing)
+  - [Validation results](#validation-results)
+  - [Every page on a phone and a desktop](#every-page-on-a-phone-and-a-desktop)
+  - [Bugs](#bugs)
 - [Deployment and local development](#deployment-and-local-development)
 - [Technologies used](#technologies-used)
 - [Credits](#credits)
@@ -314,7 +318,9 @@ enquiryForm.addEventListener("submit", async (event) => {
 
 ### Google Apps Script
 
-> **Status on 20 November 2026: live.** The Apps Script is deployed as a web app in the business Google account, and its address is in `ENQUIRY_URL` in `main.js`. It passes 55 automated tests, and a real enquiry sent from the live site with two photos arrived as expected: both emails, the PDF with the photos and their comments, and a Drive folder (see [A real enquiry from the live site](#a-real-enquiry-from-the-live-site)).
+> **Status on 21 November 2026: live.** The Apps Script is deployed as a web app in the business Google account, and its address is in `ENQUIRY_URL` in `main.js`. It passes 55 automated tests, and real enquiries sent from the site arrived as expected: both emails, the PDF with the photos and their comments, the calculator estimate, and a Drive folder (see [What the emails look like](#what-the-emails-look-like)).
+
+The whole script is in [`apps-script/Code.gs`](apps-script/Code.gs), the same file that runs in Google. It holds no addresses or IDs: the business email, the Sheet's ID and the uploads folder's ID are kept in the project's Script Properties, so the code is safe to publish. Its 55 tests are in [`apps-script/tests.js`](apps-script/tests.js): they run the script in Node.js with stand-ins for Sheets, Drive, Gmail and the postcode lookup. Run them with `node apps-script/tests.js`.
 
 Apps Script was chosen because it's free with a Google account, needs no server, and can write to Google Sheets, save to Google Drive and send email from the business's Gmail address.
 
@@ -569,15 +575,60 @@ bootstrap.Collapse.getOrCreateInstance(priceMap, { toggle: false }).show();
 
 Full results are in [TESTING.md](TESTING.md). In summary:
 
-- **HTML:** no errors or warnings on any of the six pages (W3C Nu Html Checker). The first run found six warnings, all now fixed.
-- **CSS:** the only reports are for newer CSS features the W3C CSS checker doesn't recognise yet, such as `:has()`, `lh` units and `backdrop-filter`.
-- **Accessibility:** no axe-core violations on any page at desktop or phone width.
-- **Lighthouse:** Accessibility 96 to 100, and Best Practices and SEO 100 on every page.
+- **HTML:** no errors or warnings on any of the six pages (W3C Nu Html Checker 26.11.20).
+- **CSS:** no errors or warnings (W3C CSS Validator, CSS level 3 + SVG).
+- **Accessibility:** no axe-core violations on any page at desktop or phone width, and Lighthouse Accessibility 100 on every page.
+- **Lighthouse:** Accessibility, Best Practices and SEO 100 on every page. Performance 97 to 100 on desktop and 72 to 88 on mobile, where Bootstrap's stylesheet and Google Fonts hold up the first paint.
 - **Responsive:** no sideways scrolling on any page at 390px, 820px or 1440px.
-- **JavaScript:** all 12 calculator combinations give the right total, and the counter, tabs, map button and form were tested by hand and with automated browser tests.
-- **Apps Script:** 55 automated tests pass against stand-in Google services, and a real enquiry from the live site delivered both emails, the PDF with photos, and a Drive folder.
-- **JavaScript style:** JSHint reports no warnings.
+- **JavaScript:** all 12 calculator combinations give the right total, and the counter, tabs, map button, form messages and calculator estimate were tested by hand and with automated browser tests. JSHint reports no warnings.
+- **Apps Script:** 55 automated tests pass against stand-in Google services ([`apps-script/tests.js`](apps-script/tests.js)), and real enquiries delivered both emails, the PDF with photos, the estimate and a Drive folder.
 - **Uploads:** the six-file and 20MB limits, photo shrinking, video stills and the message for a photo the browser can't open were all tested with a stand-in for Google.
+
+### Validation results
+
+**HTML**, each page checked with the W3C Nu Html Checker:
+
+![The Nu Html Checker showing "Document checking completed. No errors or warnings to show." for all six pages](documentation/validation/html-validation.webp)
+
+**CSS**, `assets/css/styles.css` checked with the W3C CSS Validator:
+
+![The W3C CSS Validator: Congratulations! No Error Found. This document validates as CSS level 3 + SVG](documentation/validation/css-validation.webp)
+
+**Lighthouse**, mobile then desktop:
+
+![Lighthouse mobile scores for all six pages](documentation/validation/lighthouse-mobile.webp)
+
+![Lighthouse desktop scores for all six pages](documentation/validation/lighthouse-desktop.webp)
+
+### Every page on a phone and a desktop
+
+| Page | Phone (390px) | Desktop (1440px) |
+|---|---|---|
+| Home | <img src="documentation/responsive/index-mobile.webp" alt="Home on a phone" width="180"> | <img src="documentation/responsive/index-desktop.webp" alt="Home on a desktop" width="420"> |
+| Bathrooms and Work | <img src="documentation/responsive/bathrooms-mobile.webp" alt="Bathrooms and Work on a phone" width="180"> | <img src="documentation/responsive/bathrooms-desktop.webp" alt="Bathrooms and Work on a desktop" width="420"> |
+| Prices and Areas | <img src="documentation/responsive/prices-mobile.webp" alt="Prices and Areas on a phone" width="180"> | <img src="documentation/responsive/prices-desktop.webp" alt="Prices and Areas on a desktop" width="420"> |
+| Contact us | <img src="documentation/responsive/contact-mobile.webp" alt="Contact us on a phone" width="180"> | <img src="documentation/responsive/contact-desktop.webp" alt="Contact us on a desktop" width="420"> |
+| Thank you | <img src="documentation/responsive/thankyou-mobile.webp" alt="Thank you on a phone" width="180"> | <img src="documentation/responsive/thankyou-desktop.webp" alt="Thank you on a desktop" width="420"> |
+| Privacy | <img src="documentation/responsive/privacy-mobile.webp" alt="Privacy on a phone" width="180"> | <img src="documentation/responsive/privacy-desktop.webp" alt="Privacy on a desktop" width="420"> |
+
+Tablet screenshots are in [TESTING.md](TESTING.md#responsiveness).
+
+### Bugs
+
+19 bugs were found and fixed. Each one, with its cause and fix, is in [TESTING.md](TESTING.md#bugs). The main ones:
+
+| Bug | Fix |
+|---|---|
+| White blocks when moving to the next carousel photo | Each carousel's photos load as it comes near the screen ([challenge 3](#3-white-blocks-in-the-carousels)) |
+| A cream strip under the wave on the Contact page | The section below slides up behind the wave ([challenge 1](#1-the-wave-on-the-contact-page-was-the-wrong-colour)) |
+| The calculator estimate didn't reach the enquiry form | The Send an enquiry link carries the area and time ([how it works](#calculator-estimate-on-the-form)) |
+| A postcode like "E8" was refused with no reason given | Every form field explains its own problem underneath |
+| Phone numbers lost their + in the Sheet | The script saves them as text |
+| The customer email said "Hi Mr," | The greeting skips titles, so "Mr J Smith" becomes "Mr Smith" |
+| New script code didn't reach the site | Redeploy with New version, never New deployment ([setup](#apps-script-once-set-up)) |
+| 3 errors and 4 warnings from the W3C CSS Validator | Masks rewritten and old `-webkit-` lines removed |
+
+**Known issue:** the customer's email can land in their spam folder, which a website can't fully control. The thank-you page now tells people to check it.
 
 ---
 
@@ -595,7 +646,7 @@ The site is deployed with GitHub Pages from the `main` branch.
 ### Apps Script (once set up)
 
 1. Create a Google Sheet with an "Enquiries" tab and a Drive folder for uploads.
-2. In the Sheet, open **Extensions**, then **Apps Script**, and paste in the script.
+2. In the Sheet, open **Extensions**, then **Apps Script**, and paste in [`apps-script/Code.gs`](apps-script/Code.gs).
 3. In **Project Settings**, add Script Properties for `SHEET_ID`, `UPLOAD_FOLDER_ID` and `BUSINESS_EMAIL`.
 4. Run `testEnquiry` once from the editor to grant permissions and check both emails arrive.
 5. **Deploy**, then **New deployment**, type **Web app**, execute as **Me**, access **Anyone**.
