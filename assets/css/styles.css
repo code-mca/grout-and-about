@@ -14,6 +14,7 @@
   --mint: #5fd3be;
   --mint-tint: #dff6f1;
   --white: #ffffff;
+  --error: #b42318; /* form messages: 6.6:1 on white, 6.3:1 on cream */
 
   /* Bootstrap Variables */
   --bs-body-font-family: "DM Sans", sans-serif;
@@ -1563,6 +1564,23 @@ button:focus-visible {
 
 .form-select {
   padding-right: 40px;
+}
+
+/* A field that needs fixing: red border, and its message underneath */
+.form-control[aria-invalid="true"],
+.form-select[aria-invalid="true"] {
+  border-color: var(--error);
+}
+
+.field-error {
+  margin: 6px 0 0;
+  color: var(--error);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.field-error:empty {
+  display: none; /* takes no space until there's a message */
 }
 
 .form-note {

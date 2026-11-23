@@ -160,7 +160,8 @@
 
         <section class="enquiry-section" aria-labelledby="enquiry-title">
             <div class="container">
-                <form id="enquiry-form" class="card card-body form-card">
+                <!-- novalidate: main.js checks the fields itself, so it can explain each problem under the field -->
+                <form id="enquiry-form" class="card card-body form-card" novalidate>
                     <h2 id="enquiry-title">
                         Send an enquiry
                     </h2>
@@ -174,28 +175,40 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="name" name="name" autocomplete="name" required>
+                            <input type="text" class="form-control" id="name" name="name" autocomplete="name" required
+                                aria-describedby="name-error" data-missing="Please enter your name.">
+                            <p class="field-error" id="name-error"></p>
                         </div>
                         <div class="col-md-6">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email" name="email" autocomplete="email"
-                                required>
+                                pattern="[^\s@]+@[^\s@]+\.[^\s@]+" required aria-describedby="email-error"
+                                data-missing="Please enter your email address."
+                                data-wrong="That email address isn't complete. It needs an @ and a full stop after it, like name@example.com.">
+                            <p class="field-error" id="email-error"></p>
                         </div>
                         <div class="col-md-6">
                             <label for="phone" class="form-label">Phone</label>
-                            <input type="tel" class="form-control" id="phone" name="phone" autocomplete="tel" required>
+                            <input type="tel" class="form-control" id="phone" name="phone" autocomplete="tel"
+                                pattern="[0-9+\(\)\s\-]{7,30}" required aria-describedby="phone-error"
+                                data-missing="Please enter your phone number."
+                                data-wrong="Please enter a phone number of at least 7 digits, using only numbers, spaces, +, brackets or dashes, like 07700 900123.">
+                            <p class="field-error" id="phone-error"></p>
                         </div>
                         <div class="col-md-6">
                             <label for="postcode" class="form-label">Postcode</label>
                             <input type="text" class="form-control" id="postcode" name="postcode"
                                 autocomplete="postal-code" pattern="[A-Za-z]{1,2}[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}"
-                                aria-describedby="postcode-help" title="A full UK postcode, for example E8 4DA"
-                                required>
+                                aria-describedby="postcode-help postcode-error" required
+                                data-missing="Please enter your postcode."
+                                data-wrong="Please enter your full postcode, both parts, like E8 4DA.">
                             <div id="postcode-help" class="form-text">For example E8 4DA</div>
+                            <p class="field-error" id="postcode-error"></p>
                         </div>
                         <div class="col-12">
                             <label for="job-type" class="form-label">Job type</label>
-                            <select class="form-select" id="job-type" name="job-type" required>
+                            <select class="form-select" id="job-type" name="job-type" required
+                                aria-describedby="job-type-error" data-missing="Please choose the type of job.">
                                 <option value="">Choose a job type</option>
                                 <option value="small-repair">Small repair</option>
                                 <option value="bathroom-refresh">Bathroom refresh</option>
@@ -204,13 +217,16 @@
                                 <option value="new-radiators">New radiators</option>
                                 <option value="other">Other</option>
                             </select>
+                            <p class="field-error" id="job-type-error"></p>
                         </div>
                         <div class="col-12">
                             <label for="description" class="form-label">Job description</label>
                             <textarea class="form-control" id="description" name="description" rows="5" required
-                                aria-describedby="description-help"></textarea>
+                                aria-describedby="description-help description-error"
+                                data-missing="Please tell us a little about the job."></textarea>
                             <div id="description-help" class="form-text">What's happening, where, and anything
                                 you've already tried</div>
+                            <p class="field-error" id="description-error"></p>
                         </div>
                         <div class="col-12">
                             <p class="form-label" id="files-title">Photos or videos <span
