@@ -273,12 +273,14 @@ button:focus-visible {
 .hero {
   background-color: var(--lilac);
   padding-bottom: 48px;
-  -webkit-mask:
-    linear-gradient(#000 0 0) top / 100% calc(100% - 47px) no-repeat,
-    url("../images/wave.svg") bottom / 100% 48px no-repeat;
-  mask:
-    linear-gradient(#000 0 0) top / 100% calc(100% - 47px) no-repeat,
-    url("../images/wave.svg") bottom / 100% 48px no-repeat;
+  /* Two mask layers, both lined up with the bottom edge: a gradient that's solid down to
+     47px from the bottom, then the 48px wave shape (the 1px overlap stops a hairline gap) */
+  mask-image:
+    linear-gradient(#000 calc(100% - 47px), transparent calc(100% - 47px)),
+    url("../images/wave.svg");
+  mask-size: 100% 100%, 100% 48px;
+  mask-position: bottom;
+  mask-repeat: no-repeat;
   position: relative;
   overflow: hidden;
 }
@@ -339,7 +341,6 @@ button:focus-visible {
 /* Style hero card */
 .hero-card {
   background-color: rgba(255, 249, 240, 0.9);
-  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   border: 2px solid var(--plum);
   border-radius: 28px;
@@ -791,22 +792,26 @@ button:focus-visible {
   right: auto;
   transform: translateX(-50%);
   bottom: 10px;
-  gap: 6px;
+  gap: 0; /* each dot's clear border (below) already spaces them 12px apart */
   margin: 0;
-  padding: 5px 9px;
+  padding: 0 3px;
   background-color: var(--cream);
   border: 2px solid var(--plum);
   border-radius: 999px;
 }
 
+/* Each dot is a 24px button, the smallest tap target WCAG 2.2 asks for, but still looks 12px:
+   a 6px clear border pads it out, and the fill and ring only cover the middle */
 .carousel-indicators [data-bs-target] {
-  width: 12px;
-  height: 12px;
+  width: 24px;
+  height: 24px;
   box-sizing: border-box;
   margin: 0;
-  border: 2px solid var(--plum);
+  border: 6px solid transparent;
   border-radius: 999px;
   background-color: var(--cream);
+  background-clip: padding-box; /* fill stops at the clear border */
+  box-shadow: inset 0 0 0 2px var(--plum); /* the plum ring, drawn just inside the clear border */
   opacity: 1;
 }
 
@@ -1131,8 +1136,10 @@ button:focus-visible {
   width: 16px;
   height: 16px;
   background-color: currentColor; /* the pill's text colour */
-  -webkit-mask: url("../images/ui/tick.svg") center / contain no-repeat;
-  mask: url("../images/ui/tick.svg") center / contain no-repeat;
+  mask-image: url("../images/ui/tick.svg"); /* the tick's shape cut out of that colour */
+  mask-position: center;
+  mask-size: contain;
+  mask-repeat: no-repeat;
 }
 
 .calc-hint {
@@ -1233,10 +1240,6 @@ button:focus-visible {
   font-family: "Fredoka", sans-serif;
   font-size: 1.375rem;
   font-weight: 600;
-}
-
-.charge-details summary::-webkit-details-marker {
-  display: none;
 }
 
 .charge-details .chev {
@@ -1725,7 +1728,6 @@ button:focus-visible {
 /* ##### Thank you page ############################################################### */
 .hero-full {
   padding-bottom: 0;
-  -webkit-mask: none;
   mask: none;
 }
 

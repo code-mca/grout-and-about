@@ -22,7 +22,7 @@ All tests below were run on 20 November 2026 against the files in this repositor
 
 ### HTML
 
-Checked with the Nu Html Checker (vnu.jar version 20.6.30), the same checker that runs [validator.w3.org/nu](https://validator.w3.org/nu/).
+Checked on 21 November 2026 with the Nu Html Checker version 26.11.20, the same checker that runs [validator.w3.org/nu](https://validator.w3.org/nu/), using its own web page with each file pasted in.
 
 | Page | Errors | Warnings |
 |---|---|---|
@@ -41,18 +41,19 @@ The first run found no errors but six warnings, all now fixed:
 
 ### CSS
 
-Checked `assets/css/styles.css` with the W3C CSS checker built into the same tool. It reported 22 items, all for newer CSS that the checker doesn't recognise yet. Each one displays as intended in Chrome.
+Checked on 21 November 2026 with the [W3C CSS Validation Service](https://jigsaw.w3.org/css-validator/) program, the latest release from W3C's own repository, with the same settings as the website: CSS level 3 + SVG, all warnings shown. Result: **no errors and no warnings**.
 
-| What it reported | Lines | What the code does |
-|---|---|---|
-| Parse error on the `:has()` selector (4) | 559, 1193, 1637, 1651 | Styles a card when something inside it has keyboard focus, and a drop-down when its summary is hovered |
-| `lh` unit in `min-height` (4) | 1666, 1673, 1680, 1690 | Gives service card descriptions a height of 2 or 3 lines so closed cards line up |
-| `text-underline-offset` (3) | 156, 214, 532 | Moves link underlines slightly down from the text |
-| `transform` using `var()` inside `rotate()` and `calc()` (3) | 272, 296, 299 | Tilts each floating icon by its own angle as it bobs |
-| `mask` and `-webkit-mask` (3) | 250, 253, 1107 | Cuts the wavy bottom edge of the hero, and draws the tick on a chosen calculator option |
-| `text-decoration-thickness` (2) | 155, 531 | Sets the thickness of link underlines |
-| `top` and `bottom` using `calc()` with `var()` (2) | 847, 851 | Positions the carousel arrows and dots above the caption strip |
-| `backdrop-filter` (1) | 315 | Blurs the icons behind the frosted hero card |
+![The W3C CSS Validator: Congratulations! No Error Found. This document validates as CSS level 3 + SVG](documentation/validation/css-validation.webp)
+
+An earlier check with an older copy of the checker listed 22 items for newer CSS it didn't know, such as `:has()` and `lh` units. The current version knows all of those. It still found 3 errors and 4 warnings, now fixed:
+
+| What it found | Fix |
+|---|---|
+| `linear-gradient(#000 0 0)` in the hero's wave mask: "too few values" | The mask is now written as separate `mask-image`, `mask-size`, `mask-position` and `mask-repeat` properties, with a gradient that's solid down to 47px from the bottom. It looks exactly the same |
+| The tick on a chosen calculator option used the `mask` shorthand: "too many values" | The same separate properties |
+| `-webkit-mask` (twice), `-webkit-backdrop-filter` and `::-webkit-details-marker`: vendor extensions | Removed. Every current browser understands the standard versions: `mask` since Safari 15.4 and Chrome 120, `backdrop-filter` since Safari 18, and since Safari 18.4 a `<summary>` with `list-style: none` no longer shows its triangle |
+
+Screenshots of the hero, the calculator, the "How we charge" drop-down and the thank-you page were taken before and after in Chromium, and not one pixel changed. In Safari older than 18 the hero card won't blur what's behind it, but it's 90% solid, so the text still reads clearly.
 
 ### JavaScript
 
@@ -111,31 +112,35 @@ On phones there are two fewer stops because the three page links sit inside the 
 
 ## Lighthouse
 
-Lighthouse 12 was run on each page in its mobile and desktop modes.
-
-> **Read these as a guide, not final scores.** They were run against a local copy where Bootstrap and the fonts were served from the same machine, because the test machine can't reach those outside sites. Performance in particular will be different on the live site. Re-run Lighthouse on the live site from Chrome DevTools before submitting.
+Lighthouse 12 was run on every page in its mobile and desktop modes on 21 November 2026, against a copy of the site with Bootstrap and the fonts served from the same machine, because the test machine can't reach outside sites.
 
 | Page | Mode | Performance | Accessibility | Best Practices | SEO |
 |---|---|---|---|---|---|
 | Home | Mobile | 77 | 100 | 100 | 100 |
 | Home | Desktop | 98 | 100 | 100 | 100 |
-| Bathrooms and Work | Mobile | 72 | 96 | 100 | 100 |
-| Bathrooms and Work | Desktop | 98 | 96 | 100 | 100 |
+| Bathrooms and Work | Mobile | 74 | 100 | 100 | 100 |
+| Bathrooms and Work | Desktop | 97 | 100 | 100 | 100 |
 | Prices and Areas | Mobile | 72 | 100 | 100 | 100 |
-| Prices and Areas | Desktop | 96 | 100 | 100 | 100 |
-| Contact us | Mobile | 80 | 100 | 100 | 100 |
+| Prices and Areas | Desktop | 97 | 100 | 100 | 100 |
+| Contact us | Mobile | 81 | 100 | 100 | 100 |
 | Contact us | Desktop | 98 | 100 | 100 | 100 |
-| Thank you | Mobile | 78 | 100 | 100 | 100 |
+| Thank you | Mobile | 79 | 100 | 100 | 100 |
 | Thank you | Desktop | 99 | 100 | 100 | 100 |
-| Privacy | Mobile | 90 | 100 | 100 | 100 |
+| Privacy | Mobile | 88 | 100 | 100 | 100 |
 | Privacy | Desktop | 100 | 100 | 100 | 100 |
 
-The first run scored 96 for Best Practices and 90 or 91 for SEO on every page, because there was no favicon and no page had a meta description. Both are now added.
+![Lighthouse mobile scores for all six pages: Accessibility, Best Practices and SEO 100 on every page](documentation/validation/lighthouse-mobile.webp)
 
-Where points are still lost:
+![Lighthouse desktop scores for all six pages](documentation/validation/lighthouse-desktop.webp)
 
-- **Accessibility (Bathrooms and Work only):** the carousel dots are smaller than Lighthouse's recommended touch target size.
-- **Performance (mobile):** the Bootstrap stylesheet blocks the first paint, and most of its rules aren't used. Lighthouse estimated about 1.6 seconds could be saved on its simulated slow phone connection. Cumulative Layout Shift was 0 on every page, because every image has a width and height.
+**On the live site,** the thank-you page was run from Chrome DevTools in desktop mode: Performance 99, Accessibility 100, Best Practices 92. The 92 came from one console error: a request to `sessions.bugsnag.com` blocked by an ad blocker. Bugsnag isn't part of this site (nothing in the code mentions it), so it came from a browser extension. Running Lighthouse in an Incognito window, where extensions are off, avoids this.
+
+What changed since the first run:
+
+- **Best Practices and SEO** went from 96 and 90 to 100 on every page after adding a favicon and a meta description on each page.
+- **Accessibility on Bathrooms and Work** went from 96 to 100 once the carousel dots became 24px buttons, the size Lighthouse asks for.
+
+Where points are still lost: **Performance on mobile.** The Bootstrap stylesheet and Google Fonts block the first paint, and most of Bootstrap's rules aren't used on any one page. Lighthouse's simulated slow phone connection makes this cost about 1.5 seconds. Cumulative Layout Shift is 0 on every page because every image has a width and height. On desktop every page scores 97 or more.
 
 ---
 
@@ -175,7 +180,7 @@ Below are the top of each page at each width.
 | Firefox | Desktop | Not yet tested |
 | Edge | Desktop | Not yet tested |
 
-The hero wave uses CSS `mask`, and the frosted card uses `backdrop-filter`, so Safari and Firefox are worth checking by hand before submission.
+The hero wave uses CSS `mask`, and the frosted card uses `backdrop-filter`, so Safari and Firefox are worth checking by hand before submission. Since 21 November these use only the standard properties, with no `-webkit-` versions, so they need Safari 15.4 or later for the wave and Safari 18 or later for the blur.
 
 ---
 
@@ -374,6 +379,7 @@ Screenshots are in the README under [What the emails look like](README.md#what-t
 | Six JSHint style warnings | Functions declared inside `if` blocks, and ternaries split over lines | Arrow functions, and short one-line labels |
 | Short alt text on the first project's photos ("Bathroom1 mid work") | Placeholder text never replaced | Each photo now describes what it shows. The headshot, soldering photo and video labels were improved too |
 | The first project's dots said "project 2" and "project 3" | The project is one house with two bathrooms and a WC | Labels now say "Show bathroom 1 in progress", "Show the finished WC" and so on |
+| W3C CSS Validator: 3 errors and 4 warnings (21 November) | An older copy of the checker had been used, which hid these among items it didn't understand. Two masks were written in a form the validator can't read, and four lines were `-webkit-` versions for older Safari | The masks use separate properties, and the `-webkit-` lines are removed. No errors or warnings now, and nothing looks different. See [CSS](#css) |
 | Script changes didn't reach the site (live test, 21 November) | The new code was deployed with **New deployment**, which made a second web app at a new address. The site still sent enquiries to the first one, which kept running the old code | Redeployed the original deployment with **New version** from **Manage deployments**. The script now has a `VERSION` label that the web app address shows in a browser, so it's easy to see which code is live |
 | Phone numbers lost their + in the Sheet (live test, 21 November) | `appendRow` lets Sheets read what it's given like typing, so +447700900123 became a number. A number starting 0 would lose its 0, and text starting with = would run as a formula | The script puts a ' in front of the phone number, and of any name, email or description starting with =, +, - or @. Sheets keeps it as text and doesn't show the '. 4 new tests |
 | Entering `E8` as the postcode gave no reason why it wouldn't send (live test, 21 November) | The form relied on the browser's own pop-up, which shows briefly, for one field at a time, in the browser's wording, and in this test didn't show at all | Each field now has its own message underneath, saying what's wrong and giving an example. See [Field messages](#field-messages) |
@@ -385,5 +391,4 @@ Screenshots are in the README under [What the emails look like](README.md#what-t
 
 | Issue | Effect | Suggested fix |
 |---|---|---|
-| The customer's email can land in Spam | In the live test, Gmail put the customer's copy in Spam, so a customer might think nothing arrived | Add a line to the thank-you page asking people to check their spam folder. Each "Not spam" helps Gmail learn |
-| Carousel dots are small | Harder to tap on a phone. Lighthouse Accessibility 96 on Bathrooms and Work | Make the dot buttons at least 24px with spacing |
+| The customer's email can land in Spam | In the live test, Gmail put the customer's copy in Spam, so a customer might think nothing arrived | Done in part: the thank-you page now says a copy has been emailed and to check the spam or junk folder if it hasn't arrived in a few minutes. Each "Not spam" helps Gmail learn |
