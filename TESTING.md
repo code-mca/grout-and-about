@@ -175,12 +175,16 @@ Below are the top of each page at each width.
 | Browser | Device | Result |
 |---|---|---|
 | Chrome 153 | Desktop (automated, all tests on this page) | Pass |
+| Safari's engine, WebKit 2.52 | Desktop and phone width (automated, calculator) | Pass |
+| Edge's engine, Chromium | Desktop and phone width (automated, calculator) | Pass after a fix (see below) |
 | Safari | Mac | Not yet tested |
 | Safari | iPhone | Not yet tested |
 | Firefox | Desktop | Not yet tested |
 | Edge | Desktop | Not yet tested |
 
 The hero wave uses CSS `mask`, and the frosted card uses `backdrop-filter`, so Safari and Firefox are worth checking by hand before submission. Since 21 November these use only the standard properties, with no `-webkit-` versions, so they need Safari 15.4 or later for the wave and Safari 18 or later for the blur.
+
+**Calculator in Safari and Edge (25 November).** It was reported that the calculator didn't work in Safari and Edge. Edge runs on Chromium, the same engine as Chrome, and Safari runs on WebKit, so both engines were tested with every area and job length at desktop and phone width, then with a reload, the Send an enquiry link and the Back button. Every total was right in both. One fault turned up in Chromium only: after Back, the pills picked before came back, but the total and the Send an enquiry link went back to the default £155. Clicking the same pills again did nothing, because they were already picked. It's fixed (see [Fixed bugs](#fixed-bugs)). WebKit had no fault. These are the engines, not Safari and Edge themselves, so the rows above are still worth checking by hand.
 
 ---
 
@@ -386,6 +390,7 @@ Screenshots are in the README under [What the emails look like](README.md#what-t
 | Calculator estimate didn't reach the form (live test, 21 November) | Send an enquiry on the calculator was a plain link to `contact.html`, so the area and time weren't passed on | The link now carries the area and time, the form shows the estimate and sends both, and the emails and PDF show the travel zone, job length and price breakdown. 23 browser checks and 8 new script tests |
 | Built-in names got past the checks | `areas[area]` is also true for names every object has, like `toString` or `__proto__`, so an edited address showed a broken estimate, and a crafted request with `__proto__` as the job type passed the script's check | `main.js` and the script now check the value is one of their own keys with `Object.keys(list).includes(key)`. 3 new tests |
 | Customer email greeted a live tester as "Hi Mr," | The script used the first word of the name, which was a title | A new `greetingName_` function skips titles ("Mr J Smith" becomes "Mr Smith") and keeps the full name when the first word is an initial. 8 new tests |
+| After Back, the calculator showed the old pills with the default total (25 November) | Chrome and Edge, when they reload a page for Back, put the picked pills back after `main.js` has run, and don't fire a `change` event, so the total and the Send an enquiry link kept the defaults | The total is added up again on `pageshow`, which fires after the pills are put back. Tested in Chromium and WebKit |
 
 ### Known issues
 

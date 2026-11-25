@@ -74,6 +74,11 @@ if (calc) {
 
   calc.addEventListener("change", updateEstimate);
   updateEstimate();
+
+  // After the Back button, Chrome and Edge can put back the pills that were
+  // picked once this script has run, without a change event. Add it up again
+  // when the page shows, so the total always matches the picked pills.
+  window.addEventListener("pageshow", updateEstimate);
 }
 
 /* "Check the map": open the price map and scroll down to it */

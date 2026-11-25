@@ -308,7 +308,7 @@ enquiryForm.addEventListener("submit", async (event) => {
 | ----------------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Slide counter           | Bathrooms and Work | Listens for Bootstrap's `slide.bs.carousel` event and writes "2 of 5" using `event.to`, the number of the slide that's coming in.                                                                                                                              |
 | Carousel preloader      | Bathrooms and Work | An `IntersectionObserver` notices when a carousel is within 300px of the screen, switches its photos from `loading="lazy"` to `eager` and calls `img.decode()`, so every slide is ready before it's shown. See [Challenges](#3-white-blocks-in-the-carousels). |
-| Repair visit calculator | Prices and Areas   | Reads the checked area and time on every `change` event. Total = £85 + £40 for each half hour after the first hour + travel (£0, £30 or £50). Updates the line items and the total.                                                                            |
+| Repair visit calculator | Prices and Areas   | Reads the checked area and time on every `change` event, and again on `pageshow` so the total still matches after the Back button. Total = £85 + £40 for each half hour after the first hour + travel (£0, £30 or £50). Updates the line items and the total. |
 | Estimate on the form    | Prices and Areas, Contact us | The calculator adds the picked area and time to its Send an enquiry link, like `contact.html?area=near&minutes=90`. The Contact us page reads them with `URLSearchParams`, shows the estimate and puts both values in hidden fields. See [Calculator estimate on the form](#calculator-estimate-on-the-form). |
 | Check the map           | Prices and Areas   | Opens the map with Bootstrap's Collapse API, waits for the `shown.bs.collapse` event, then scrolls the map into view. If the map is already open it scrolls straight away.                                                                                     |
 | Tab shortcuts           | Prices and Areas   | Buttons with a `data-show-tab` attribute (See bathroom projects, See repair prices) switch tabs with `bootstrap.Tab.getOrCreateInstance(tab).show()` and scroll back up to the tabs.                                                                           |
@@ -615,13 +615,14 @@ Tablet screenshots are in [TESTING.md](TESTING.md#responsiveness).
 
 ### Bugs
 
-19 bugs were found and fixed. Each one, with its cause and fix, is in [TESTING.md](TESTING.md#bugs). The main ones:
+20 bugs were found and fixed. Each one, with its cause and fix, is in [TESTING.md](TESTING.md#bugs). The main ones:
 
 | Bug | Fix |
 |---|---|
 | White blocks when moving to the next carousel photo | Each carousel's photos load as it comes near the screen ([challenge 3](#3-white-blocks-in-the-carousels)) |
 | A cream strip under the wave on the Contact page | The section below slides up behind the wave ([challenge 1](#1-the-wave-on-the-contact-page-was-the-wrong-colour)) |
 | The calculator estimate didn't reach the enquiry form | The Send an enquiry link carries the area and time ([how it works](#calculator-estimate-on-the-form)) |
+| After Back, Chrome and Edge showed the old pills with the default total | The total is added up again when the page shows |
 | A postcode like "E8" was refused with no reason given | Every form field explains its own problem underneath |
 | Phone numbers lost their + in the Sheet | The script saves them as text |
 | The customer email said "Hi Mr," | The greeting skips titles, so "Mr J Smith" becomes "Mr Smith" |
